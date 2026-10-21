@@ -780,14 +780,34 @@ const IMG = {
  ganglion:"https://shop.openbci.com/cdn/shop/files/2025-ganglion-product-photo-web_533x.png?v=1762525896",
  "obci-bundles":"https://shop.openbci.com/cdn/shop/files/UCM4-001_533x.png?v=1700584925",
  ceegrid:"https://shop.openbci.com/cdn/shop/files/cEEGridpair_533x.png?v=1711565148",
+ bioamp:"images/bioamp.jpg",
+ bioshield:"images/bioshield.jpg",
+ emotibit:"images/emotibit.jpg",
+ grovegsr:"images/grovegsr.jpg",
+ hackeeg:"images/hackeeg.jpg",
+ thermal:"images/thermal.jpg",
+ core:"images/core.jpg",
  unicorn:"https://www.gtec.at/wp-content/uploads/2023/09/unicorn-hybrid-black-onhead-matte-ambient-teal-rightview-01.jpg",
  neon:"https://framerusercontent.com/images/c2SuaXHvd7FyeCCQvYFWQVY0j8.png?width=2000&height=1200",
  muse2:"https://choosemuse.com/cdn/shop/files/Muse2Product-2_600x.jpg?v=1760660842",
  idun4:"https://cdn.xingosoftware.com/audioxpress/images/fetch/dpr_1/https%3A%2F%2Faudioxpress.com%2Fassets%2Fupload%2Fimages%2F1%2F20260723130700_IDUN-Guardian4-5-TWeb.jpg"
 };
 P.forEach(x=>{ if(IMG[x.id]) x.img=IMG[x.id]; });
+const CREDIT={
+ bioamp:"Photo from the BioAmp EXG Pill project (Upside Down Labs, GitHub)",
+ bioshield:"Photo from the Muscle BioAmp Shield project (Upside Down Labs, GitHub)",
+ emotibit:"Photo from the EmotiBit documentation (GitHub)",
+ grovegsr:"Photo from the Grove GSR tutorial (GitHub, aliekens)",
+ hackeeg:"Photo from the HackEEG shield project (GitHub, starcat-io)",
+ thermal:"DIY FLIR Lepton camera build (GitHub, danjulio/lepton), not a retail product",
+ core:"Photo from the Pupil Labs documentation (GitHub)",
+ unicorn:"Photo from g.tec’s website",
+ neon:"Photo from Pupil Labs’ shop",
+ muse2:"Photo from choosemuse.com"
+};
+P.forEach(x=>{ if(CREDIT[x.id]) x.credit=CREDIT[x.id]; });
 function imgOf(x){
-  if(x.img) return {src:x.img,kind:"Product photo"};
+  if(x.img) return {src:x.img,kind:x.credit||"Product photo"};
   const v=x.v.find(v=>v[3]==="indep")||x.v[0];
   if(v) return {src:`https://i.ytimg.com/vi/${v[0]}/hqdefault.jpg`,kind:"Thumbnail from a review video"};
   return null;
