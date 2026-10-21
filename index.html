@@ -1,0 +1,1036 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sensing & XR Gear Repository for Human-Factors Labs (Oct 2026)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EAEFF3; --surface:#FFFFFF; --surface-2:#F5F8FA; --ink:#15263A; --muted:#536479; --line:#C7D2DC;
+  --accent:#0D6B70; --accent-soft:#D3EAEA;
+  --warn:#8E5406; --warn-soft:#FAE9CF; --bad:#9E2F2F; --bad-soft:#F5DCDC; --good:#2A672D; --good-soft:#DAEDD6;
+  --c-bci:#6A4DB8; --c-phys:#B8392E; --c-eye:#0D6B70; --c-xr:#2D5AA4; --c-haptic:#A86F12; --c-diy:#4A7A28; --c-chem:#B0306E; --c-contact:#6B6F1A; --c-dms:#C8551B;
+  --shadow:0 1px 0 rgba(21,38,58,.06);
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1A26; --surface:#162434; --surface-2:#1B2C3F; --ink:#E4ECF3; --muted:#9BACBE; --line:#2C4157;
+    --accent:#5CC2C6; --accent-soft:#163E44;
+    --warn:#F0B35A; --warn-soft:#3A2B12; --bad:#F08A8A; --bad-soft:#3E1D1F; --good:#8FD18F; --good-soft:#1C3620;
+    --c-bci:#A88DF0; --c-phys:#F0857A; --c-eye:#5CC2C6; --c-xr:#7FA6EC; --c-haptic:#E5B45A; --c-diy:#9CCB6E; --c-chem:#F08CC0; --c-contact:#C9CF6A; --c-dms:#F29A63;
+    --shadow:none; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1A26; --surface:#162434; --surface-2:#1B2C3F; --ink:#E4ECF3; --muted:#9BACBE; --line:#2C4157;
+  --accent:#5CC2C6; --accent-soft:#163E44;
+  --warn:#F0B35A; --warn-soft:#3A2B12; --bad:#F08A8A; --bad-soft:#3E1D1F; --good:#8FD18F; --good-soft:#1C3620;
+  --c-bci:#A88DF0; --c-phys:#F0857A; --c-eye:#5CC2C6; --c-xr:#7FA6EC; --c-haptic:#E5B45A; --c-diy:#9CCB6E; --c-chem:#F08CC0; --c-contact:#C9CF6A; --c-dms:#F29A63;
+  --shadow:none; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+h1,h2,h3,.tab,.chip,.btn,.lane-label,.tier-tag{font-family:"Archivo","Arial Narrow",Arial,sans-serif}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+/* header */
+header.top{padding:34px 0 18px}
+header.top h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:800;font-stretch:78%;line-height:1;letter-spacing:-.01em;margin:0 0 10px;max-width:20ch}
+header.top p.lede{margin:0;color:var(--muted);max-width:68ch;font-size:1.05rem}
+.top-row{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.theme-btn{background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer;font:600 .85rem "Archivo",sans-serif;white-space:nowrap}
+
+/* spectrum (the memorable element) */
+.spectrum{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 18px 8px;margin:18px 0 8px;box-shadow:var(--shadow)}
+.spectrum h2{font-size:1.15rem;font-stretch:90%;margin:0 0 2px}
+.spectrum .hint{margin:0 0 10px;color:var(--muted);font-size:.92rem}
+.spec-scroll{overflow-x:auto}
+.spec-scroll svg{display:block;min-width:720px;width:100%;height:auto}
+.lane-label{font-size:12px;font-weight:600;fill:var(--muted)}
+.axis-label{font-size:11px;fill:var(--muted);font-family:"Atkinson Hyperlegible",sans-serif}
+.tier-tag{font-size:11px;font-weight:700;fill:var(--muted)}
+.dot{cursor:pointer;transition:r .12s}
+.dot:hover,.dot:focus{r:9}
+.dot:focus{outline:none;stroke:var(--ink);stroke-width:2.5}
+#tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--bg);padding:6px 10px;border-radius:6px;font-size:.85rem;z-index:50;display:none;max-width:260px}
+
+/* tabs */
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);margin-top:14px}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto}
+.tab{background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);padding:12px 12px 10px;font-size:.98rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+section.panel{display:none;padding:22px 0 60px}
+section.panel.on{display:block}
+.panel h2{font-size:1.6rem;font-stretch:85%;margin:0 0 6px}
+.panel > .wrap > p.intro{color:var(--muted);max-width:72ch;margin:0 0 18px}
+
+/* filters */
+.filters{display:grid;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
+.f-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.f-row input[type=search]{flex:1 1 260px;min-width:0;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);color:var(--ink);font:inherit}
+select{padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);color:var(--ink);font:inherit}
+.chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:.88rem;font-weight:600;cursor:pointer}
+.chip .sw{width:10px;height:10px;border-radius:50%}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.check{display:inline-flex;gap:6px;align-items:center;font-size:.92rem;color:var(--muted);cursor:pointer}
+.count{font-size:.9rem;color:var(--muted);margin:2px 0 10px}
+
+/* list rows */
+.list{display:grid;gap:8px}
+.item{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--cat,var(--line));border-radius:10px;box-shadow:var(--shadow)}
+.item > button.row{all:unset;box-sizing:border-box;display:grid;grid-template-columns:56px minmax(0,2.3fr) 1fr 1.1fr .6fr 1fr;gap:12px;align-items:center;width:100%;padding:13px 16px;cursor:pointer}
+.item > button.row:focus-visible{outline:3px solid var(--accent);outline-offset:-3px;border-radius:8px}
+.row .nm{font-weight:700;font-size:1.02rem}
+.row .mk{color:var(--muted);font-size:.86rem}
+.row .pr{font-weight:700;font-variant-numeric:tabular-nums}
+.row small{color:var(--muted);display:block;font-size:.8rem;font-weight:400}
+.badge{display:inline-block;font-size:.78rem;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted)}
+.b-good{background:var(--good-soft);color:var(--good);border-color:transparent}
+.b-warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.b-bad{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+.b-acc{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.detail{display:none;padding:2px 16px 18px;border-top:1px dashed var(--line)}
+.item.open .detail{display:block}
+.d-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:22px;margin-top:14px}
+.detail h3{font-size:.98rem;font-stretch:90%;margin:0 0 6px}
+.detail ul{margin:0;padding-left:20px}
+.detail li{margin:2px 0}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:700;font-size:.88rem;border-radius:8px;padding:8px 12px;border:1px solid var(--accent);color:var(--accent);background:transparent;cursor:pointer}
+.btn.solid{background:var(--accent);color:var(--surface)}
+.note{font-size:.86rem;color:var(--warn);background:var(--warn-soft);padding:8px 10px;border-radius:8px;margin-top:10px}
+.empty{padding:30px;text-align:center;background:var(--surface);border:1px dashed var(--line);border-radius:12px;color:var(--muted)}
+
+/* videos */
+.vids{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;margin-top:10px}
+.vid{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.player{aspect-ratio:16/9;background:#0b1520;position:relative;display:flex;align-items:center;justify-content:center}
+.player button{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;color:#E4ECF3;text-align:center;padding:12px}
+.player button:focus-visible{outline:3px solid #5CC2C6;outline-offset:-6px}
+.play{width:58px;height:40px;border-radius:10px;background:#C4302B;display:flex;align-items:center;justify-content:center}
+.play::after{content:"";border-left:16px solid #fff;border-top:10px solid transparent;border-bottom:10px solid transparent;margin-left:4px}
+.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vmeta{padding:10px 12px}
+.vmeta b{display:block;font-size:.94rem;line-height:1.3}
+.vmeta span{font-size:.82rem;color:var(--muted)}
+.vmeta a{font-size:.85rem;font-weight:700}
+.vgroup{margin-bottom:28px}
+.vgroup h3{font-size:1.15rem;font-stretch:88%;margin:0 0 2px}
+
+/* generic content */
+.table-scroll{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:720px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:"Archivo",sans-serif;font-size:.9rem;color:var(--muted);background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+td .lnk{all:unset;cursor:pointer;color:var(--accent);font-weight:700;text-decoration:underline}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px}
+.card h3{margin:0 0 8px;font-size:1.12rem;font-stretch:88%}
+.card ol,.card ul{margin:0;padding-left:20px}
+.card li{margin:6px 0}
+.flag{border-left:5px solid var(--bad)}
+dl.gloss{display:grid;grid-template-columns:minmax(130px,200px) 1fr;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:0}
+dl.gloss dt,dl.gloss dd{margin:0;padding:11px 14px;border-bottom:1px solid var(--line)}
+dl.gloss dt{font-weight:700;background:var(--surface-2);font-family:"Archivo",sans-serif}
+footer{color:var(--muted);font-size:.86rem;padding:24px 0 40px;border-top:1px solid var(--line)}
+
+/* images */
+.thumb{position:relative;display:block;width:56px;height:56px;border-radius:8px;overflow:hidden;background:#fff;border:1px solid var(--line);flex:none}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb .ph{display:none;position:absolute;inset:0;align-items:center;justify-content:center;text-align:center;padding:4px;font:700 .68rem "Archivo",sans-serif;line-height:1.1;color:#fff;background:var(--cat)}
+.thumb.noimg img{display:none}
+.thumb.noimg .ph{display:flex}
+.thumb.big{width:100%;height:auto;aspect-ratio:16/10;border-radius:10px}
+.thumb.big img{object-fit:contain}
+.thumb.big .ph{font-size:1.15rem}
+figure.hero{margin:0 0 14px}
+figure.hero figcaption{font-size:.82rem;color:var(--muted);margin-top:6px}
+.player .vthumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
+.player button{position:relative;z-index:1}
+.imgnote{margin:10px 0 0;font-size:.88rem;color:var(--muted);max-width:72ch}
+.top10{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.t10{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--cat);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.t10 h3{margin:0;font-size:1.05rem;font-stretch:88%}
+.t10 .rank{font:800 1.6rem/1 "Archivo",sans-serif;font-stretch:75%;color:var(--cat)}
+.t10 p{margin:0;font-size:.95rem}
+@media (max-width:820px){
+  .item > button.row{grid-template-columns:56px 1fr auto;gap:6px 12px}
+  .row .c-cat,.row .c-open{display:none}
+  .row .c-status{grid-column:2/-1}
+  .d-grid,.cols{grid-template-columns:1fr}
+  dl.gloss{grid-template-columns:1fr}
+  dl.gloss dt{border-bottom:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="tip" role="presentation"></div>
+
+<header class="top">
+  <div class="wrap">
+    <div class="top-row">
+      <div>
+        <h1>Sensing &amp; XR gear repository</h1>
+        <p class="lede">Brain–computer interfaces, body sensors, eye and face trackers, contactless sensing, operator monitoring, biochemical sensors, headsets, haptic gloves and do-it-yourself kits, from $11 boards to $43,000 research rigs. Updated 22 October 2026. Every acronym is spelled out in the Glossary tab.</p>
+        <p class="imgnote">Photos and video players load straight from the makers’ sites and YouTube. If a viewer blocks outside images, you’ll see a coloured tile instead, with an “Open image directly” link in each product’s details. The downloadable copy of this page shows everything.</p>
+      </div>
+      <button class="theme-btn" id="themeBtn" type="button">Switch theme</button>
+    </div>
+
+    <div class="spectrum" aria-labelledby="specTitle">
+      <h2 id="specTitle">Price spectrum</h2>
+      <p class="hint">Each dot is one product, placed by price on a log scale (each step is ×10). Select a dot to open its full entry.</p>
+      <div class="spec-scroll"><svg id="spec" viewBox="0 0 1000 400" role="img" aria-label="Products plotted by price and category"></svg></div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Sections">
+  <div class="wrap" role="tablist">
+    <button class="tab" role="tab" data-tab="catalog">Catalog</button>
+    <button class="tab" role="tab" data-tab="top">Top 10 new finds</button>
+    <button class="tab" role="tab" data-tab="videos">Review videos</button>
+    <button class="tab" role="tab" data-tab="rankings">Rankings</button>
+    <button class="tab" role="tab" data-tab="picks">Picks for our lab</button>
+    <button class="tab" role="tab" data-tab="trends">Trends &amp; red flags</button>
+    <button class="tab" role="tab" data-tab="glossary">Glossary</button>
+  </div>
+</nav>
+
+<main>
+<section class="panel" id="p-catalog"><div class="wrap">
+  <h2>Catalog</h2>
+  <p class="intro">Select a row for specs, strengths, limits, links and embedded reviews. Entries marked “Not verified” are listed so you know they exist, but their price or status still needs a vendor quote.</p>
+  <div class="filters">
+    <div class="f-row">
+      <input type="search" id="q" placeholder="Search by name, maker or feature (try “LSL” or “eye tracking”)" aria-label="Search">
+      <select id="tier" aria-label="Price tier">
+        <option value="">Any price</option>
+        <option value="T1">Under $300</option>
+        <option value="T2">$300 – $1,500</option>
+        <option value="T3">$1,500 – $10,000</option>
+        <option value="T4">Over $10,000</option>
+        <option value="Q">Quote only / unknown</option>
+      </select>
+      <select id="open" aria-label="Openness">
+        <option value="">Any openness</option>
+        <option value="open">Open source</option>
+        <option value="mixed">Open software, closed hardware</option>
+        <option value="closed">Closed</option>
+      </select>
+      <select id="sort" aria-label="Sort">
+        <option value="asc">Price: low to high</option>
+        <option value="desc">Price: high to low</option>
+        <option value="name">Name A–Z</option>
+      </select>
+    </div>
+    <div class="f-row" id="catChips"></div>
+    <div class="f-row">
+      <label class="check"><input type="checkbox" id="fRaw"> Raw data with no subscription</label>
+      <label class="check"><input type="checkbox" id="fVid"> Has review videos</label>
+      <label class="check"><input type="checkbox" id="fVer"> Verified prices only</label>
+      <button class="btn" type="button" id="reset">Clear filters</button>
+    </div>
+  </div>
+  <div class="count" id="count" aria-live="polite"></div>
+  <div class="list" id="list"></div>
+</div></section>
+
+<section class="panel" id="p-top"><div class="wrap">
+  <h2>Top 10 new finds for operator-state monitoring</h2>
+  <p class="intro">The most interesting additions from the October 2026 research round, ranked for a lab that studies workload, fatigue and stress. Select a card to open the full entry.</p>
+  <div class="top10" id="top10"></div>
+</div></section>
+
+<section class="panel" id="p-videos"><div class="wrap">
+  <h2>Review videos</h2>
+  <p class="intro">Independent reviews are listed first in each group. “Official” and “Sponsored” mean the maker supplied the video or the unit, so treat them as marketing. Players load only when you press play. If a player stays blank, use the “Open on YouTube” link.</p>
+  <div class="f-row" style="margin-bottom:14px">
+    <label class="check"><input type="checkbox" id="vIndep"> Independent reviews only</label>
+  </div>
+  <div id="vidAll"></div>
+</div></section>
+
+<section class="panel" id="p-rankings"><div class="wrap">
+  <h2>Rankings by category</h2>
+  <p class="intro">“Best value” weighs data quality and openness against price, not just the lowest number. Select a product name to jump to its entry.</p>
+  <div class="table-scroll"><table id="rankTable"></table></div>
+</div></section>
+
+<section class="panel" id="p-picks"><div class="wrap">
+  <h2>Picks for a human-factors lab</h2>
+  <p class="intro">Assumes a lab that already owns a g.tec 16-channel EEG and a Gazepoint 150 Hz eye tracker, and runs operator-state, cognitive-load and XR experiments.</p>
+  <div class="cols" id="picks"></div>
+</div></section>
+
+<section class="panel" id="p-trends"><div class="wrap">
+  <h2>Trends and red flags</h2>
+  <p class="intro">What changed in 2025–2026, and what to check before any purchase.</p>
+  <div class="cols">
+    <div class="card"><h3>Trends</h3><ol id="trends"></ol></div>
+    <div class="card flag"><h3>Red flags</h3><ul id="flags"></ul></div>
+  </div>
+  <div class="card" style="margin-top:18px"><h3>Known gaps in this repository</h3>
+    <p style="margin:0">The search budget ran out before several makers could be priced: lab fNIRS systems, most research-grade EEG amplifiers, Shimmer, PLUX, Biopac, Tobii, Manus, Teslasuit, Ultraleap, AR glasses and Magic Leap. They are marked “Not verified”. Enterprise prices are reseller snapshots that differ by up to about 35%, so request formal quotes, especially where export-control or trade-compliance rules apply.</p>
+  </div>
+</div></section>
+
+<section class="panel" id="p-glossary"><div class="wrap">
+  <h2>Glossary</h2>
+  <p class="intro">Plain-language meanings for every abbreviation used on this page.</p>
+  <dl class="gloss" id="gloss"></dl>
+</div></section>
+</main>
+
+<footer><div class="wrap">Compiled 21 October 2026 from vendor pages, reseller listings, peer-reviewed validation studies and YouTube search results. Prices change often; confirm with the seller before ordering. YouTube channel names marked “probably” were inferred from video titles.</div></footer>
+
+<script>
+const CATS = {
+  bci:   {label:"Brain & nerve interfaces", short:"BCI / EEG / EMG", color:"var(--c-bci)"},
+  phys:  {label:"Body sensors & wearables", short:"Body sensors", color:"var(--c-phys)"},
+  eye:   {label:"Eye tracking", short:"Eye tracking", color:"var(--c-eye)"},
+  xr:    {label:"AR / VR / MR headsets & glasses", short:"Headsets", color:"var(--c-xr)"},
+  haptic:{label:"Haptic gloves & suits", short:"Haptics", color:"var(--c-haptic)"},
+  diy:   {label:"DIY & maker kits", short:"DIY kits", color:"var(--c-diy)"},
+  chem:  {label:"Biochemical sensing", short:"Biochemical", color:"var(--c-chem)"},
+  contact:{label:"Contactless & remote sensing", short:"Contactless", color:"var(--c-contact)"},
+  dms:   {label:"Operator & driver monitoring", short:"Operator monitoring", color:"var(--c-dms)"}
+};
+
+/* raw: true = free raw data, "paid" = needs paid software, "cloud" = cloud download only, false = no raw access, null = not checked
+   v: [youtubeId, title, channel, kind]  kind: indep | official | sponsored */
+const P = [
+// ---------- BCI / EEG / EMG ----------
+{id:"pieeg8",n:"PiEEG-8",mk:"PiEEG",cat:"bci",open:"open",raw:true,p:350,price:"$350",src:"pieeg.com, Oct 2026 (launched at $250 on Crowd Supply in 2023)",status:"Shipping",
+ specs:["8 electrode channels plus reference and bias","24-bit resolution (ADS1299 amplifier chip)","250 to 16,000 samples per second","Records brain (EEG), muscle (EMG) and heart (ECG) signals","Plugs onto a Raspberry Pi 3, 4 or 5","Must run from a 5 V battery pack, which keeps the wearer isolated from mains power"],
+ best:["Cheapest real multi-channel EEG","Teaching and pilot studies","Spare channels next to a lab system"],
+ lim:["Hobby-grade: you supply the Pi, electrodes and cap","No medical certification"],
+ url:"https://www.pieeg.com/hardware/pieeg",site:"https://www.pieeg.com",v:[]},
+{id:"ganglion",n:"OpenBCI Ganglion",mk:"OpenBCI",cat:"bci",open:"open",raw:true,p:624.99,price:"$624.99",src:"shop.openbci.com, Oct 2026",status:"Shipping",
+ specs:["4 channels","Bluetooth Low Energy wireless","Works with BrainFlow and LSL streaming tools"],
+ best:["Simple 4-channel experiments, EMG and heart signals","Classroom use"],lim:["Only 4 channels","Lower sample rate than Cyton"],
+ url:"https://shop.openbci.com/",site:"https://openbci.com",v:[]},
+{id:"cyton",n:"OpenBCI Cyton",mk:"OpenBCI",cat:"bci",open:"open",raw:true,p:1249,price:"$1,249 (external trigger add-on $199)",src:"shop.openbci.com, Oct 2026",status:"Shipping",
+ specs:["8 channels","32-bit Arduino-compatible board","Records EEG, EMG and ECG","Optional trigger board for syncing to experiment events","Works with BrainFlow and LSL"],
+ best:["Best-supported open EEG board","Large community, many published studies"],lim:["Costs about 3.5× PiEEG for the same channel count","Electrodes and headwear sold separately"],
+ url:"https://shop.openbci.com/",site:"https://openbci.com",v:[]},
+{id:"daisy",n:"OpenBCI Cyton + Daisy",mk:"OpenBCI",cat:"bci",open:"open",raw:true,p:2499,price:"$2,499",src:"shop.openbci.com, Oct 2026",status:"Shipping",
+ specs:["16 channels","Wireless through a USB radio dongle"],best:["Open 16-channel setup comparable in channel count to your g.tec"],lim:["Sample rate per channel drops when using 16 channels wirelessly"],
+ url:"https://shop.openbci.com/products/cyton-daisy-biosensing-boards-16-channel",site:"https://openbci.com",v:[]},
+{id:"obci-bundles",n:"OpenBCI headwear & bundles",mk:"OpenBCI",cat:"bci",open:"open",raw:true,p:349.99,price:"$349.99 to $4,499",src:"shop.openbci.com, Oct 2026",status:"Shipping",
+ specs:["EEG Headband Kit $349.99","Ultracortex 3D-printed headset from $2,999","EXG Experiment Bundle $999","Open-cEEGrid around-the-ear EEG bundle $3,299.99","All-in-One R&D Bundle $4,499"],
+ best:["Getting a complete working system in one order"],lim:["Bundles include boards you may already have"],
+ url:"https://shop.openbci.com/",site:"https://openbci.com",v:[]},
+{id:"galea",n:"OpenBCI Galea",mk:"OpenBCI",cat:"bci",open:"mixed",raw:true,p:42980,price:"$42,980 (Pupil Labs Neon add-on $10,900)",src:"shop.openbci.com, Oct 2026",status:"Shipping (listed in stock)",
+ specs:["Biosensing faceplate fitted to a Varjo headset","Combines EEG, EMG, skin sweat response (EDA), optical pulse (PPG) and eye tracking","Open software kit (SDK)"],
+ best:["All-in-one physiological recording inside VR","Cognitive-load studies in simulation"],lim:["Very expensive","Tied to Varjo headset hardware"],
+ url:"https://shop.openbci.com/products/galea",site:"https://galea.co",v:[]},
+{id:"hackeeg",n:"HackEEG (Arduino Due shield)",mk:"Starcat",cat:"bci",open:"open",raw:true,p:null,price:"Price not verified",src:"Crowd Supply listing",status:"Check availability",nv:true,
+ specs:["ADS1299-based EEG and ECG shield for Arduino Due"],best:["Makers who prefer Arduino over Raspberry Pi"],lim:["Availability unclear in 2026"],
+ url:"https://www.crowdsupply.com",site:"https://www.crowdsupply.com",v:[]},
+{id:"crown",n:"Neurosity Crown",mk:"Neurosity",cat:"bci",open:"mixed",raw:true,p:1499,price:"$1,499",src:"neurosity.co, Oct 2026 (third-party sites showing $899–$999 look out of date)",status:"Shipping",
+ specs:["8 dry electrodes (positions CP3, C3, F5, PO3, PO4, F6, C4, CP4)","256 samples per second","Processes data on the headset","228 g","Open JavaScript and Python SDKs; vendor says BrainFlow and LSL are supported"],
+ best:["Quick dry setup for focus and attention studies","Developer-friendly"],lim:["Fixed electrode positions","Dry electrodes are noisier than gel"],
+ url:"https://neurosity.co",site:"https://neurosity.co",
+ v:[["ITkOVnJw-28","Unboxing and testing its efficacy","Dr. Dan Gartenberg (probably)","indep"],["4DK1bP3k1W8","First impressions from a game designer","Independent creator","indep"],["eANeBYyl3RA","Crown vs Notion 2 “Official Review”","Dr. Cody (affiliate)","sponsored"]]},
+{id:"muse-athena",n:"Muse S Athena",mk:"Interaxon (Muse)",cat:"bci",open:"mixed",raw:true,p:474.99,price:"$474.99 (Premium app $109.99/year after year one)",src:"choosemuse.com, Oct 2026",status:"Shipping (launched March 2025)",
+ specs:["EEG plus forehead blood-oxygen sensing (fNIRS)","Optical pulse (PPG) and motion sensor","Soft fabric headband","Up to 10 hours battery","Raw data through third-party apps that stream OSC or LSL"],
+ best:["Cheapest EEG + fNIRS combination","Sleep and relaxation studies, quick screening"],lim:["4 forehead and ear electrodes only","Consumer device, not validated for research"],
+ url:"https://choosemuse.com",site:"https://choosemuse.com",
+ v:[["s1nmjuc_hEg","I wore a brain-reading headband for 30 days","Independent reviewer","indep"],["B5tdCikFTMQ","$475 brain-training headband (EEG, HRV, fNIRS)","Independent reviewer","indep"],["-yuZrMVAso0","A neurodivergent perspective","Independent reviewer","indep"],["pJWFCeDt4T4","The first sleep tracker that improved my sleep","Sponsored (discount code)","sponsored"]]},
+{id:"muse2",n:"Muse 2",mk:"Interaxon (Muse)",cat:"bci",open:"mixed",raw:true,p:249.99,price:"about $249.99",src:"Muse pricing, 2026",status:"Shipping",
+ specs:["4-channel EEG headband","Optical pulse and motion sensor"],best:["Lowest-cost consumer EEG with a large research user base"],lim:["Older model; no fNIRS"],
+ url:"https://choosemuse.com",site:"https://choosemuse.com",v:[]},
+{id:"emotiv-mn8",n:"Emotiv MN8 earbuds",mk:"Emotiv",cat:"bci",open:"closed",raw:"paid",p:399,price:"$399",src:"Emotiv blog, 2026",status:"Shipping (new MW20 earbuds also listed)",
+ specs:["2-channel EEG inside earbuds"],best:["Discreet workplace attention monitoring"],lim:["Only 2 channels","Raw EEG export needs EmotivPRO ($149/month)"],
+ url:"https://www.emotiv.com",site:"https://www.emotiv.com",v:[]},
+{id:"emotiv-insight",n:"Emotiv Insight",mk:"Emotiv",cat:"bci",open:"closed",raw:"paid",p:499,price:"$499",src:"Emotiv blog, 2026",status:"Shipping",
+ specs:["5-channel semi-dry EEG headset"],best:["Fast setup for simple attention or workload measures"],lim:["Raw EEG export needs EmotivPRO ($149/month or $1,068/year)"],
+ url:"https://www.emotiv.com",site:"https://www.emotiv.com",v:[]},
+{id:"emotiv-epocx",n:"Emotiv EPOC X",mk:"Emotiv",cat:"bci",open:"closed",raw:"paid",p:1199,price:"$1,199 (previously $999)",src:"Emotiv blog, 2026",status:"Shipping",
+ specs:["14 channels","Saline-soaked felt electrodes","Wireless"],best:["More channels at a mid price"],lim:["True yearly cost about $2,267 once EmotivPRO is added","Saline sensors dry out in long sessions"],
+ url:"https://www.emotiv.com",site:"https://www.emotiv.com",
+ v:[["rILMi8mcNGc","Unboxing EMOTIV EPOC X","Emotiv","official"]]},
+{id:"emotiv-flex",n:"Emotiv Flex 2",mk:"Emotiv",cat:"bci",open:"closed",raw:"paid",p:2399,price:"from $2,399",src:"Emotiv blog, 2026",status:"Shipping",
+ specs:["Up to 32 channels","Saline or gel electrodes in a cap"],best:["Higher-density cap EEG without lab-amplifier prices"],lim:["Subscription needed for raw data"],
+ url:"https://www.emotiv.com",site:"https://www.emotiv.com",v:[]},
+{id:"unicorn",n:"g.tec Unicorn Hybrid Black",mk:"g.tec",cat:"bci",open:"mixed",raw:true,p:1518,price:"$1,518 (another g.tec page shows $1,545; €1,089 on unicorn-bi.com). Python API add-on $614",src:"gtec.at, Oct 2026",status:"Shipping",
+ specs:["8 hybrid electrodes (dry or with gel)","24-bit, 250 samples per second","More than 3 hours battery","Motion sensors (accelerometer and gyroscope)","56 g","C, .NET and Unity APIs included; no subscription"],
+ best:["Validated: a 2023 Psychophysiology study found it performed remarkably well against a $50,000+ lab amplifier (spectral correlation about 0.9)","Same maker as your existing g.tec system"],
+ lim:["Python access is a paid add-on","Only 8 channels"],
+ url:"https://www.gtec.at/product/unicorn-hybrid-black/",site:"https://www.gtec.at",v:[]},
+{id:"neuralband",n:"Meta Neural Band (wrist EMG)",mk:"Meta",cat:"bci",open:"closed",raw:false,p:799,price:"Bundled with Meta Ray-Ban Display ($799); replacement band $199",src:"Meta, 2025–2026",status:"Shipping (US)",
+ specs:["Surface EMG (muscle signals read at the wrist) for gesture input","18-hour battery","IPX7 water resistance"],
+ best:["Studying silent, hands-down gesture input"],lim:["No public raw-EMG access for developers was found","Only sold with the glasses"],
+ url:"https://www.meta.com/blog/meta-ray-ban-display-ai-glasses-connect-2025/",site:"https://www.meta.com",v:[]},
+{id:"brainproducts",n:"Brain Products (actiCHamp, LiveAmp and others)",mk:"Brain Products",cat:"bci",open:"closed",raw:true,p:null,price:"Quote only",src:"Not verified",status:"Enterprise / quote",nv:true,
+ specs:["Research-grade lab and mobile EEG amplifiers"],best:["High-density lab EEG"],lim:["Price not verified in this pass"],url:"https://www.brainproducts.com",site:"https://www.brainproducts.com",v:[]},
+{id:"antneuro",n:"ANT Neuro (eego series)",mk:"ANT Neuro",cat:"bci",open:"closed",raw:true,p:null,price:"Quote only",src:"Not verified",status:"Enterprise / quote",nv:true,
+ specs:["Research-grade mobile and lab EEG"],best:["Mobile high-density EEG"],lim:["Price not verified in this pass"],url:"https://www.ant-neuro.com",site:"https://www.ant-neuro.com",v:[]},
+{id:"dsi",n:"Wearable Sensing DSI headsets",mk:"Wearable Sensing",cat:"bci",open:"closed",raw:true,p:null,price:"Quote only",src:"Not verified",status:"Enterprise / quote",nv:true,
+ specs:["Dry-electrode research EEG headsets"],best:["Dry EEG with research pedigree, often used in defense studies"],lim:["Price not verified in this pass"],url:"https://wearablesensing.com",site:"https://wearablesensing.com",v:[]},
+{id:"bitbrain",n:"Bitbrain headsets",mk:"Bitbrain",cat:"bci",open:"closed",raw:true,p:null,price:"Quote only",src:"Not verified",status:"Enterprise / quote",nv:true,
+ specs:["Dry and water-based wearable EEG"],best:["Field and workplace EEG"],lim:["Price not verified in this pass"],url:"https://www.bitbrain.com",site:"https://www.bitbrain.com",v:[]},
+{id:"mbt",n:"mBrainTrain Smartfones / Smarting",mk:"mBrainTrain",cat:"bci",open:"closed",raw:true,p:null,price:"Quote only",src:"Not verified",status:"Enterprise / quote",nv:true,
+ specs:["Mobile EEG, including EEG headphones"],best:["Mobile EEG on the move"],lim:["Price not verified in this pass"],url:"https://mbraintrain.com",site:"https://mbraintrain.com",v:[]},
+{id:"kernel",n:"Kernel Flow2 (fNIRS)",mk:"Kernel",cat:"bci",open:"closed",raw:null,p:null,price:"Quote only",src:"Not verified",status:"Check availability",nv:true,
+ specs:["Whole-head wearable brain blood-oxygen imaging (fNIRS)"],best:["Wearable brain imaging beyond EEG"],lim:["Price and status not verified"],url:"https://www.kernel.com",site:"https://www.kernel.com",v:[]},
+{id:"nirx",n:"NIRx / Artinis fNIRS systems",mk:"NIRx, Artinis",cat:"bci",open:"closed",raw:true,p:null,price:"Quote only",src:"Not verified",status:"Enterprise / quote",nv:true,
+ specs:["Research fNIRS systems (NIRx NIRSport, Artinis Brite and others)"],best:["Cognitive workload measures that tolerate movement better than EEG"],lim:["Price not verified in this pass"],url:"https://nirx.net",site:"https://www.artinis.com",v:[]},
+{id:"mendi",n:"Mendi (consumer fNIRS)",mk:"Mendi",cat:"bci",open:"closed",raw:null,p:null,price:"Not verified",src:"Not verified",status:"Check availability",nv:true,
+ specs:["Forehead fNIRS headband for neurofeedback"],best:["Low-cost fNIRS curiosity"],lim:["Raw data access unknown"],url:"https://www.mendi.io",site:"https://www.mendi.io",v:[]},
+
+// ---------- Body sensors ----------
+{id:"polarh10",n:"Polar H10 chest strap",mk:"Polar",cat:"phys",open:"mixed",raw:true,p:104.95,price:"$104.95",src:"polar.com US, Oct 2026",status:"Shipping",
+ specs:["Single-lead chest ECG at 130 samples per second (raw stream)","Beat-to-beat (RR) intervals","3-axis accelerometer","Up to 400 hours battery","Bluetooth and ANT+; documented open SDK, no account or cloud"],
+ best:["Best low-cost heart-rate-variability source","Validated: 99.6% beat-interval quality and r = 0.997 against a Holter monitor (2019 study)"],lim:["Chest strap only; no skin conductance or temperature"],
+ url:"https://www.polar.com/us-en/sensors/h10-heart-rate-sensor",site:"https://www.polar.com",
+ v:[["6F_RccP7Ec0","Polar H10 scientific review","The Quantified Scientist (Rob ter Horst)","indep"],["gOwopGHrRTE","Polar H10 review","Independent reviewer","indep"]]},
+{id:"movesense",n:"Movesense Medical / HR+",mk:"Movesense",cat:"phys",open:"mixed",raw:true,p:180,price:"about $180 (2020 price; re-check)",src:"2020 blog review",status:"Check current price",
+ specs:["ECG at up to 512 samples per second","Motion sensors (IMU)","Programmable firmware SDK"],
+ best:["Estimates breathing rate from ECG better than the H10 (r = 0.95 vs 0.85 against gas analysis, 2022 study)"],lim:["Price is old; confirm before ordering"],
+ url:"https://www.movesense.com",site:"https://www.movesense.com",v:[]},
+{id:"embraceplus",n:"Empatica EmbracePlus / EmbraceMini",mk:"Empatica",cat:"phys",open:"closed",raw:"cloud",p:2332.8,price:"Academic plan from $2,332.80 (device line $1,166.40 for 3-year or $1,749.60 for 5-year data access; 25% academic discount)",src:"empatica.com store, 2026",status:"Shipping",
+ specs:["Optical pulse (blood volume pulse) at 64 samples per second","Skin sweat response (EDA)","Skin temperature, accelerometer, optional gyroscope","Stores up to 36 hours on the device","FDA-cleared platform"],
+ best:["Multi-day ambulatory stress studies"],lim:["Data only through Empatica’s cloud, with no live streaming","Older E4 wristband shut down in August 2024"],
+ url:"https://www.empatica.com/store/platform-professional/",site:"https://www.empatica.com",v:[]},
+{id:"emotibit",n:"EmotiBit",mk:"EmotiBit (sold by OpenBCI)",cat:"phys",open:"open",raw:true,p:249.99,price:"from $249.99",src:"shop.openbci.com bioamplifiers listing, 2026",status:"Shipping",
+ specs:["Open-source wearable: optical pulse (PPG), skin sweat response (EDA), temperature, motion"],best:["Open alternative to Empatica with live data"],lim:["Wrist placement makes skin-response signals weaker than finger electrodes"],
+ url:"https://shop.openbci.com/",site:"https://www.emotibit.com",v:[]},
+{id:"hexoskin",n:"Hexoskin smart shirt",mk:"Hexoskin",cat:"phys",open:"closed",raw:true,p:499,price:"$499 (2019 price; re-check)",src:"2019 thesis",status:"Check current price",nv:true,
+ specs:["ECG at 256 samples per second","Breathing and activity from textile sensors","API access"],best:["Long wear with breathing measurement"],lim:["Price is old"],
+ url:"https://www.hexoskin.com",site:"https://www.hexoskin.com",v:[]},
+{id:"plux",n:"PLUX biosignalsplux / BITalino",mk:"PLUX",cat:"phys",open:"mixed",raw:true,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["Modular kits for ECG, EMG, EDA, breathing and more","BITalino is the low-cost board version"],best:["Flexible multi-sensor lab rigs"],lim:["Price not verified in this pass"],
+ url:"https://www.pluxbiosignals.com",site:"https://www.pluxbiosignals.com",v:[]},
+{id:"shimmer",n:"Shimmer3 GSR+ / ECG units",mk:"Shimmer",cat:"phys",open:"closed",raw:true,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["Small wearable units for skin conductance, ECG, EMG and motion"],best:["Research-grade wearable sweat response"],lim:["Price not verified in this pass"],
+ url:"https://shimmersensing.com",site:"https://shimmersensing.com",v:[]},
+{id:"biopac",n:"Biopac lab systems",mk:"Biopac",cat:"phys",open:"closed",raw:true,p:null,price:"Quote only",src:"Not verified",status:"Enterprise / quote",nv:true,
+ specs:["Lab-grade multi-channel physiological recording"],best:["Gold-standard lab recordings"],lim:["Price not verified in this pass"],
+ url:"https://www.biopac.com",site:"https://www.biopac.com",v:[]},
+{id:"xsens",n:"Movella Xsens motion capture",mk:"Movella",cat:"phys",open:"closed",raw:true,p:null,price:"Quote only",src:"Not verified",status:"Enterprise / quote",nv:true,
+ specs:["Full-body inertial motion capture suits"],best:["Posture and workload biomechanics"],lim:["Price not verified in this pass"],
+ url:"https://www.movella.com",site:"https://www.movella.com",v:[]},
+{id:"consumer-wear",n:"Consumer wearables (Garmin, Oura, Whoop, Apple Watch)",mk:"Various",cat:"phys",open:"closed",raw:false,p:291.77,price:"about $292 average (2023 PhysioKit paper)",src:"arXiv 2308.02756",status:"Shipping",
+ specs:["Processed heart rate, sleep and activity scores"],best:["Large-scale, long-term wellbeing tracking"],lim:["Little or no raw signal access; Garmin’s SDK gives processed heart rate, not raw pulse"],
+ url:"https://arxiv.org/abs/2308.02756",site:"https://arxiv.org/abs/2308.02756",v:[]},
+
+// ---------- Eye tracking ----------
+{id:"neon",n:"Pupil Labs Neon",mk:"Pupil Labs",cat:"eye",open:"mixed",raw:true,p:6800,price:"from €6,250 (academic €5,515); $7,499 on OpenBCI US shop; $5,750 via iMotions",src:"pupil-labs.com, Oct 2026",status:"Shipping",
+ specs:["No calibration needed","Neural-network gaze estimate that works outdoors and in sunlight","Outputs gaze, fixations, blinks, pupil size and eyelid opening","LSL support and open software ecosystem","Interchangeable frames"],
+ best:["Best wearable eye tracker for real-world and cockpit studies"],lim:["Euro pricing; US price varies by reseller"],
+ url:"https://pupil-labs.com/products/neon",site:"https://pupil-labs.com",v:[]},
+{id:"neon-vr",n:"Pupil Labs Neon VR mount (Quest 3 / Pico 4)",mk:"Pupil Labs",cat:"eye",open:"mixed",raw:true,p:6700,price:"€6,195",src:"pupil-labs.com shop, 2026",status:"Shipping",
+ specs:["Neon module fitted inside Quest 3 or Pico 4 headsets"],best:["Affordable research eye tracking in VR"],lim:["Headset bought separately"],
+ url:"https://pupil-labs.com/products/neon/shop",site:"https://pupil-labs.com",v:[]},
+{id:"invisible",n:"Pupil Labs Invisible",mk:"Pupil Labs",cat:"eye",open:"mixed",raw:true,p:6400,price:"€5,900 (legacy)",src:"pupil-labs.com",status:"Retiring",
+ specs:["Calibration-free eye-tracking glasses"],best:["Existing users only"],lim:["Being retired in favour of Neon"],
+ url:"https://pupil-labs.com/products/invisible",site:"https://pupil-labs.com",v:[]},
+{id:"core",n:"Pupil Labs Core (open source)",mk:"Pupil Labs",cat:"eye",open:"open",raw:true,p:2000,price:"historically €1,840–€2,740 (re-check)",src:"Older forum data",status:"Check",nv:true,
+ specs:["Fully open-source software","Needs calibration"],best:["Labs that want to modify the tracking pipeline"],lim:["Price data is old"],
+ url:"https://pupil-labs.com",site:"https://pupil-labs.com",v:[]},
+{id:"tobii",n:"Tobii Pro Glasses 3 / Spark / Fusion",mk:"Tobii",cat:"eye",open:"closed",raw:true,p:null,price:"Quote only (older sources: glasses above $10,000 plus software licence)",src:"Not verified",status:"Enterprise / quote",nv:true,
+ specs:["Wearable glasses and screen-based research trackers"],best:["Established research ecosystem"],lim:["Separate software licence; historically Windows-only"],
+ url:"https://www.tobii.com",site:"https://www.tobii.com",v:[]},
+{id:"eyelink",n:"SR Research EyeLink",mk:"SR Research",cat:"eye",open:"closed",raw:true,p:null,price:"Quote only",src:"Not verified",status:"Enterprise / quote",nv:true,
+ specs:["High-speed lab eye trackers"],best:["Highest-precision desk-mounted tracking"],lim:["Price not verified; not wearable"],
+ url:"https://www.sr-research.com",site:"https://www.sr-research.com",v:[]},
+{id:"gazepoint",n:"Gazepoint (already in our lab)",mk:"Gazepoint",cat:"eye",open:"mixed",raw:true,p:null,price:"Already owned (not repriced)",src:"—",status:"Shipping",
+ specs:["150 Hz screen-based eye tracker","Open API"],best:["Desk-based display studies"],lim:["Not wearable"],
+ url:"https://www.gazept.com",site:"https://www.gazept.com",v:[]},
+
+// ---------- Headsets ----------
+{id:"quest3s",n:"Meta Quest 3S",mk:"Meta",cat:"xr",open:"closed",raw:false,p:349,price:"about $349 (raised $50 in April 2026)",src:"Meta, 2026",status:"Shipping",
+ specs:["Standalone VR with colour passthrough","No eye tracking"],best:["Cheapest capable standalone headset"],lim:["No eye tracking; Meta account required"],
+ url:"https://www.meta.com/quest/",site:"https://www.meta.com",v:[]},
+{id:"quest3",n:"Meta Quest 3 (512 GB)",mk:"Meta",cat:"xr",open:"closed",raw:false,p:599,price:"about $599 (raised $100 in April 2026)",src:"Meta, 2026",status:"Shipping",
+ specs:["Standalone mixed reality with sharper lenses than 3S","No built-in eye tracking; accepts Pupil Labs Neon mount"],best:["Budget research VR when paired with Neon"],lim:["Closed platform; Meta account required"],
+ url:"https://www.meta.com/quest/",site:"https://www.meta.com",v:[]},
+{id:"rbdisplay",n:"Meta Ray-Ban Display + Neural Band",mk:"Meta / EssilorLuxottica",cat:"xr",open:"closed",raw:false,p:799,price:"$799",src:"Meta, 2025",status:"Shipping (US)",
+ specs:["Small display in one lens, about 20° field of view","Includes wrist EMG band for gestures"],best:["Studying glanceable heads-up information"],lim:["Reviewers call it an early-adopter device; small app ecosystem"],
+ url:"https://www.meta.com/blog/meta-ray-ban-display-ai-glasses-connect-2025/",site:"https://www.meta.com",
+ v:[["mnylkq175Mk","Meta Ray-Ban Display review: 6 months later","Independent reviewer","indep"],["yyzJQmveKZU","Meta Ray-Ban Display glasses review","Independent reviewer","indep"]]},
+{id:"rbgen2",n:"Ray-Ban Meta Gen 2 (no display)",mk:"Meta / EssilorLuxottica",cat:"xr",open:"closed",raw:false,p:379,price:"$379",src:"Meta, 2025",status:"Shipping",
+ specs:["Camera and audio smart glasses without a display"],best:["First-person video capture in field studies"],lim:["No display"],
+ url:"https://www.meta.com",site:"https://www.meta.com",v:[]},
+{id:"beyond2",n:"Bigscreen Beyond 2",mk:"Bigscreen",cat:"xr",open:"mixed",raw:null,p:959,price:"$959 (cut 31 Aug 2026)",src:"Road to VR / Bigscreen store, 2026",status:"Shipping in 1–3 days",
+ specs:["2560×2560 micro-OLED per eye","116° diagonal field of view","75/90 Hz","107 g","Needs SteamVR base stations and a gaming PC"],best:["Sharpest, lightest PC VR"],lim:["Custom face-scan fit; base stations sold separately"],
+ url:"https://store.bigscreenvr.com/products/bigscreen-beyond-2",site:"https://www.bigscreenvr.com",
+ v:[["QBQzViR4xU4","Bigscreen Beyond 2 launch video","Bigscreen","official"]]},
+{id:"beyond2e",n:"Bigscreen Beyond 2e (eye tracking)",mk:"Bigscreen",cat:"xr",open:"mixed",raw:null,p:1159,price:"$1,159",src:"Road to VR / Bigscreen store, 2026",status:"Shipping",
+ specs:["Same as Beyond 2 plus eye tracking (beta software)"],best:["Low-cost eye-tracked PC VR"],lim:["Eye tracking needs a precise fit (reviewers: it “forgives nothing”)"],
+ url:"https://store.bigscreenvr.com/products/bigscreen-beyond-2",site:"https://www.bigscreenvr.com",
+ v:[["OSoaen6yzVM","Stunningly beautiful, but the eye tracking forgives nothing","MRTV","indep"],["zkqZOrfzrN0","Beyond 2e issues and experiences","Independent user","indep"]]},
+{id:"steamframe",n:"Valve Steam Frame",mk:"Valve",cat:"xr",open:"mixed",raw:null,p:1059,price:"$1,059 (256 GB) / $1,299 (1 TB); power adapter $29",src:"Valve via vr.org, Sept 2026",status:"Shipping (launched 14 Sept 2026)",
+ specs:["2160×2160 LCD per eye, 72–144 Hz","Snapdragon 8 Gen 3, 16 GB RAM","Built-in eye tracking for “foveated streaming” (full detail only where you look)","Four tracking cameras, PCIe expansion slot, 440 g","No colour passthrough, no hand tracking"],
+ best:["Open PC-VR ecosystem with eye tracking","Replaces the retiring Valve Index"],lim:["Engadget: 6.5/10, “exorbitantly expensive”","Eye-tracking data access for research not confirmed"],
+ url:"https://store.steampowered.com/",site:"https://www.valvesoftware.com",
+ v:[["SjEcCoXJeYQ","Valve Steam Frame review: how good is it?","CNET (probably)","indep"],["Gmc5GwWE8a8","The Steam Frame is a MESS but I really like it","Independent reviewer","indep"],["oMef5itOOG4","Steam Frame review, part 1","Independent reviewer","indep"],["fQ5buH4tpkM","Valve sent me the Steam Frame","Unit supplied by Valve","sponsored"]]},
+{id:"galaxyxr",n:"Samsung Galaxy XR",mk:"Samsung / Google",cat:"xr",open:"mixed",raw:null,p:1799,price:"$1,799 (controllers $250)",src:"UploadVR, Oct 2025",status:"Shipping (US, Korea)",
+ specs:["3552×3840 micro-OLED per eye, 90 Hz","Four eye-tracking cameras, face tracking, depth sensor","Android XR / OpenXR","About 2 hours battery"],
+ best:["High-resolution standalone mixed reality on an open standard (OpenXR)"],lim:["Thin app library; short battery"],
+ url:"https://www.samsung.com/us/",site:"https://www.samsung.com",
+ v:[["8cneYjIEWjY","A week with the Galaxy XR: the good and not so good","Independent reviewer","indep"],["eYPFletjZw0","Galaxy XR review: 6 months later","Independent reviewer","indep"],["Kiaaa4g4ppY","Galaxy XR unboxing and initial review","Samsung-supplied unit","sponsored"]]},
+{id:"visionpro",n:"Apple Vision Pro (M5)",mk:"Apple",cat:"xr",open:"closed",raw:false,p:3699,price:"$3,699 (was $3,499; confirm on apple.com)",src:"Road to VR, mid-2026",status:"Shipping",
+ specs:["Very high-resolution micro-OLED mixed reality","Eye and hand tracking as the main input"],best:["Interface concepts and stimulus presentation"],lim:["Apps cannot read raw gaze data (privacy design)","Closed platform"],
+ url:"https://www.apple.com/apple-vision-pro/",site:"https://www.apple.com",
+ v:[["LzZ2j9CAcww","Apple Vision Pro M5 review","Tested (probably)","indep"],["YpSLo2L1AsQ","Vision Pro M5 vs M2: is the upgrade worth it?","Independent reviewer","indep"]]},
+{id:"xr4",n:"Varjo XR-4 (2026)",mk:"Varjo",cat:"xr",open:"mixed",raw:true,p:7689,price:"about $7,689 (launch 2023: $3,990); Base Pro software $2,500/year",src:"Reseller listings, 2026",status:"Shipping, business only",
+ specs:["Dual 4K mini-LED displays, 51 pixels per degree","120°×105° field of view","LiDAR depth sensing","Inside-out or base-station tracking","Research eye tracking"],
+ best:["Research-grade simulator and mixed-reality studies"],lim:["Analytics needs a paid licence","Needs a powerful PC"],
+ url:"https://varjo.com",site:"https://varjo.com",
+ v:[["Ynn1vZvKoAI","This $6000 Varjo XR-4 is NOT what I expected (MSFS & DCS)","Flight-sim channel","indep"],["jkDLWR9WPqQ","Varjo XR-4 hands-on: still needs some work","Independent reviewer (CES 2024)","indep"]]},
+{id:"xr4fe",n:"Varjo XR-4 Focal Edition (2026)",mk:"Varjo",cat:"xr",open:"mixed",raw:true,p:15389,price:"$15,389 (Channel XR) to $20,775 (Knoxlabs); €19,819 (Bestware)",src:"Reseller listings, Oct 2026",status:"Shipping, business only",
+ specs:["Everything in XR-4 plus gaze-driven autofocus passthrough cameras","Secure Editions: TAA-compliant, made in Finland, no-radio option"],
+ best:["Close-up mixed-reality work (cockpits, instruments)","Classified or secure facilities"],lim:["About 35% price spread between resellers; get quotes"],
+ url:"https://www.knoxlabs.com/products/varjo-xr-4-focal-edition",site:"https://varjo.com",v:[]},
+{id:"hololens2",n:"Microsoft HoloLens 2",mk:"Microsoft",cat:"xr",open:"closed",raw:null,p:null,price:"No longer produced",src:"Microsoft statements, 2024",status:"Retiring",
+ specs:["Optical see-through AR headset"],best:["Existing deployments only"],lim:["Production ended 2024; support including security updates ends 31 Dec 2027"],
+ url:"https://www.microsoft.com",site:"https://www.microsoft.com",v:[]},
+{id:"magicleap2",n:"Magic Leap 2",mk:"Magic Leap",cat:"xr",open:"closed",raw:null,p:null,price:"Not verified",src:"Not verified",status:"Check (at risk)",nv:true,
+ specs:["Enterprise optical see-through AR"],best:["See-through AR with dimming"],lim:["Status and price not verified; treat as at risk"],url:"https://www.magicleap.com",site:"https://www.magicleap.com",v:[]},
+{id:"pimax",n:"Pimax wide-field headsets",mk:"Pimax",cat:"xr",open:"mixed",raw:null,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["Very wide field-of-view PC VR"],best:["Peripheral-vision studies"],lim:["Not verified in this pass"],url:"https://pimax.com",site:"https://pimax.com",v:[]},
+{id:"vive",n:"HTC Vive Focus Vision / XR Elite",mk:"HTC",cat:"xr",open:"mixed",raw:null,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["Standalone and PC VR with optional eye tracking"],best:["Business-friendly headsets"],lim:["Not verified in this pass"],url:"https://www.vive.com",site:"https://www.vive.com",v:[]},
+{id:"pico",n:"Pico 4 Ultra / Enterprise",mk:"Pico (ByteDance)",cat:"xr",open:"mixed",raw:null,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["Standalone mixed reality; Enterprise model has eye tracking"],best:["Alternative to Quest; accepts Neon mount (Pico 4)"],lim:["Not verified in this pass"],url:"https://www.picoxr.com",site:"https://www.picoxr.com",v:[]},
+{id:"xreal",n:"XREAL / Viture / RayNeo display glasses",mk:"Various",cat:"xr",open:"closed",raw:null,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["Lightweight glasses that act as a wearable screen"],best:["Portable displays for field prototypes"],lim:["Not verified in this pass"],url:"https://www.xreal.com",site:"https://www.xreal.com",v:[]},
+{id:"lynx",n:"Lynx R-1 / R-2",mk:"Lynx",cat:"xr",open:"mixed",raw:null,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["Open-leaning mixed-reality headset from France"],best:["European, more open alternative"],lim:["Not verified in this pass"],url:"https://lynx-r.com",site:"https://lynx-r.com",v:[]},
+
+// ---------- Haptics ----------
+{id:"tactglove",n:"bHaptics TactGlove DK2",mk:"bHaptics",cat:"haptic",open:"closed",raw:null,p:290,price:"about $290–$300 per pair",src:"Unbound XR / Selfridges, 2026",status:"Intermittent stock (DK3 shown at AWE 2026)",
+ specs:["12 vibration motors per pair","Bluetooth Low Energy, 3.5 hours battery","Uses the headset’s camera hand tracking"],best:["Cheap touch cues in VR training"],lim:["Vibration only; no force feedback"],
+ url:"https://unboundxr.com/b2b/bhaptics-tactglove-dk2",site:"https://www.bhaptics.com",
+ v:[["Nu_f-El5V0Q","These haptic gloves bring Ready Player One to life on Quest 3","Independent reviewer","indep"],["A5sfth-TSMA","TactGlove DK3 demo at AWE 2026","Independent reviewer","indep"],["-mHS88FDfSs","Introducing TactGlove DK3 (Kiuk Gwak, bHaptics)","bHaptics","official"]]},
+{id:"tactsuit",n:"bHaptics TactSuit vests",mk:"bHaptics",cat:"haptic",open:"closed",raw:null,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["Vibration vest for torso cues"],best:["Directional alerts on the body"],lim:["Not verified in this pass"],url:"https://www.bhaptics.com",site:"https://www.bhaptics.com",v:[]},
+{id:"nova2",n:"SenseGlove Nova 2",mk:"SenseGlove",cat:"haptic",open:"mixed",raw:null,p:6000,price:"about $4,800–$8,600 at resellers (launch €5,999 / about $6,000)",src:"UploadVR 2024; Channel XR 2026",status:"Shipping",
+ specs:["Four magnetic brakes resist the fingers, up to 20 N each (about a 2 kg weight)","Vibration in thumb and index finger","Palm-pressure strap (“Active Contact Feedback”)","Wireless, about 3 hours battery, about 350 g per glove","Unity, Unreal and native SDKs","Needs a Quest controller or Vive tracker for hand position"],
+ best:["Most practical force-feedback glove for training research"],lim:["Large reseller price spread"],
+ url:"https://channelxr.com/products/senseglove-nova-2",site:"https://www.senseglove.com",
+ v:[["pXeSiJIQPgY","Gloves for $6,000?! I tried them","VoodooDE VR (probably)","indep"],["SZGcC79Ed-M","SenseGlove Nova 2","SenseGlove","official"]]},
+{id:"haptx",n:"HaptX Gloves G1",mk:"HaptX",cat:"haptic",open:"closed",raw:null,p:5495,price:"from $5,495 per pair (sources disagree, up to about $10,000 per hand; quote)",src:"Mixed sources",status:"Enterprise / quote",nv:true,
+ specs:["130+ microfluidic touch points per glove","Force feedback","Needs an air-pressure supply unit"],best:["Highest-fidelity touch for fine manual tasks"],lim:["Heavy; price unconfirmed"],
+ url:"https://haptx.com",site:"https://haptx.com",v:[]},
+{id:"manus",n:"Manus Metagloves",mk:"Manus",cat:"haptic",open:"closed",raw:true,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["High-accuracy finger-tracking gloves"],best:["Finger motion capture and robot teleoperation"],lim:["Not verified in this pass"],url:"https://www.manus-meta.com",site:"https://www.manus-meta.com",v:[]},
+{id:"teslasuit",n:"Teslasuit",mk:"Teslasuit",cat:"haptic",open:"closed",raw:true,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["Full-body suit with electrical muscle stimulation and biometrics"],best:["Full-body haptic training"],lim:["Not verified in this pass"],url:"https://teslasuit.io",site:"https://teslasuit.io",v:[]},
+{id:"weart",n:"WEART TouchDIVER",mk:"WEART",cat:"haptic",open:"closed",raw:null,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["Fingertip force, texture and temperature feedback"],best:["Temperature cues"],lim:["Not verified in this pass"],url:"https://weart.it",site:"https://weart.it",v:[]},
+{id:"lucidgloves",n:"LucidGloves (open-source DIY)",mk:"LucidVR community",cat:"haptic",open:"open",raw:true,p:null,price:"Parts cost only (not verified)",src:"GitHub project",status:"DIY",nv:true,
+ specs:["3D-printed finger-tracking glove with optional force feedback"],best:["Very low-cost prototypes"],lim:["Hobby build quality"],url:"https://github.com/LucidVR/lucidgloves",site:"https://github.com/LucidVR",v:[]},
+
+// ---------- DIY ----------
+{id:"bioamp",n:"Upside Down Labs BioAmp EXG Pill",mk:"Upside Down Labs",cat:"diy",open:"open",raw:true,p:34.49,price:"$34.49 (2-pack $69, 8-pack $249)",src:"Tindie, Oct 2026",status:"Shipping",
+ specs:["1-channel amplifier for heart (ECG), muscle (EMG), eye-movement (EOG) or brain (EEG) signals","Needs a microcontroller with an analog input"],best:["Cheapest way to add EMG or ECG channels"],lim:["Analog only; you write the code"],
+ url:"https://www.crowdsupply.com/upside-down-labs/bioamp-exg-pill",site:"https://www.upsidedownlabs.in",v:[]},
+{id:"candy",n:"Muscle BioAmp Candy / Heart BioAmp Candy",mk:"Upside Down Labs",cat:"diy",open:"open",raw:true,p:12.49,price:"$12.49 / $17.49",src:"Tindie, Oct 2026",status:"Shipping",
+ specs:["Tiny single-purpose EMG or ECG boards"],best:["Classroom demos"],lim:["Single channel"],url:"https://www.tindie.com/stores/upsidedownlabs/",site:"https://www.upsidedownlabs.in",v:[]},
+{id:"bioshield",n:"Muscle BioAmp Shield",mk:"Upside Down Labs",cat:"diy",open:"open",raw:true,p:49.49,price:"$49.49",src:"Tindie, Oct 2026",status:"Shipping",
+ specs:["Arduino shield for EMG"],best:["Gesture-control prototypes"],lim:["EMG only"],url:"https://www.tindie.com/stores/upsidedownlabs/",site:"https://www.upsidedownlabs.in",v:[]},
+{id:"diykit",n:"DIY Neuroscience Kit Pro (2026) / Basic",mk:"Upside Down Labs",cat:"diy",open:"open",raw:true,p:119,price:"$169 Pro / $119 Basic",src:"Tindie, Oct 2026",status:"Shipping",
+ specs:["Complete starter kit with boards, electrodes and cables"],best:["Getting started in one box"],lim:["Teaching-grade"],url:"https://www.tindie.com/stores/upsidedownlabs/",site:"https://www.upsidedownlabs.in",v:[]},
+{id:"npg",n:"NPG Lite Beast Pack",mk:"Upside Down Labs",cat:"diy",open:"open",raw:true,p:199,price:"$199",src:"Tindie, Oct 2026",status:"Shipping",
+ specs:["Multi-channel wireless biosignal kit"],best:["Wireless multi-sensor hobby projects"],lim:["Teaching-grade"],url:"https://www.tindie.com/stores/upsidedownlabs/",site:"https://www.upsidedownlabs.in",v:[]},
+{id:"pulse",n:"OpenBCI Pulse Sensor",mk:"OpenBCI",cat:"diy",open:"open",raw:true,p:29.99,price:"$29.99",src:"shop.openbci.com, Oct 2026",status:"Shipping",
+ specs:["Clip-on optical pulse (PPG) sensor"],best:["Adding pulse to an OpenBCI board"],lim:["Motion-sensitive"],url:"https://shop.openbci.com/",site:"https://openbci.com",v:[]},
+{id:"physiokit",n:"PhysioKit (open research toolkit)",mk:"Academic project",cat:"diy",open:"open",raw:true,p:null,price:"Free software; low-cost parts",src:"arXiv 2308.02756",status:"Open source",
+ specs:["Low-cost toolkit for single- and multi-person physiological studies"],best:["Group or team studies on a budget"],lim:["Academic code; self-support"],url:"https://arxiv.org/abs/2308.02756",site:"https://arxiv.org/abs/2308.02756",v:[]},
+{id:"myoware",n:"MyoWare 2.0 muscle sensor",mk:"MyoWare / SparkFun",cat:"diy",open:"open",raw:true,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["EMG sensor board with snap electrodes"],best:["Simple EMG triggers"],lim:["EMG only; not verified in this pass"],url:"https://myoware.com",site:"https://myoware.com",v:[]},
+// ---------- October 2026 additions ----------
+{id:"idun4",n:"IDUN Guardian 4 (in-ear EEG)",mk:"IDUN Technologies",cat:"bci",open:"mixed",raw:true,p:1250,price:"CHF 999 presale (about $1,250); CHF 1,299 after presale",src:"iduntechnologies.com, 2026",status:"Shipping (since mid-2026)",
+ specs:["Dual-channel EEG in each earpiece with soft dry “Dryode” electrodes (no gel)","Motion sensor (IMU), microphones and noise cancelling","Bluetooth 5.4, LE Audio and Wi-Fi; plays audio while recording","Wired neckband design (true-wireless Guardian 5 comes next)","Python SDK and public API with raw data; jaw-clench and eye-movement detection"],
+ best:["Hidden EEG under headsets or helmets","Multi-night fatigue and sleep studies","Cross-checking against our g.tec system"],
+ lim:["Ear-EEG mainly covers temporal-lobe activity","A 2024 University of Southampton study found scalp EEG clearly beat in-ear EEG for workload classification","Workload scores come from a cloud service; check data rules"],
+ url:"https://iduntechnologies.com/",site:"https://iduntechnologies.com",
+ v:[["HTbMO6e05Eo","Get started with the IDUN Guardian in under 2 minutes","IDUN Technologies","official"]]},
+{id:"neurable",n:"Neurable MW75 Neuro LT (EEG headphones)",mk:"Neurable × Master & Dynamic",cat:"bci",open:"closed",raw:null,p:499,price:"$499 (the original MW75 Neuro was $699)",src:"Neurable / SoundGuys, late 2025",status:"Shipping (US, Canada)",
+ specs:["12 soft fabric dry EEG sensors in the ear cushions","Active noise cancelling, Bluetooth 5.2","10–13 hours battery with focus tracking"],
+ best:["Realistic long-shift workload studies where a cap would change behaviour"],
+ lim:["App gives focus and fatigue scores; raw EEG access not confirmed, so ask Neurable before buying","Evidence is mostly company-authored"],
+ url:"https://www.neurable.com",site:"https://www.neurable.com",
+ v:[["1jkDY1HXK5E","100 days with the brain-reading headphones","Viktor Thorup (affiliate code)","indep"],["DSJf7p-YG4Y","Are these the headphones of the future?","Independent reviewer","indep"]]},
+{id:"naox",n:"Naox Link / Naox Wave (ear-EEG)",mk:"Naox Technologies",cat:"bci",open:"closed",raw:"cloud",p:null,price:"Link: quote (clinical). Wave: price not announced",src:"Engadget / Digital Trends, Jan 2026",status:"Link shipping to clinicians; Wave expected late 2026",
+ specs:["Link: wired earbuds recording one EEG channel, FDA-cleared","Wave: the same idea in true-wireless earbuds for other brands"],
+ best:["Regulatory-grade reference for validating consumer ear-EEG"],lim:["Single channel, clinical focus","Data goes to a cloud service"],
+ url:"https://naox.tech",site:"https://naox.tech",v:[]},
+{id:"ceegrid",n:"Open-cEEGrid Kit (around-the-ear EEG)",mk:"cEEGrid / OpenBCI",cat:"bci",open:"open",raw:true,p:799.99,price:"$799.99 (complete bundle with board $3,299.99)",src:"shop.openbci.com, Oct 2026",status:"Shipping",
+ specs:["Flexible printed electrode arrays that sit behind each ear","Connects to OpenBCI boards"],
+ best:["Discreet, research-backed ear-EEG with fully open data"],lim:["Needs an OpenBCI board; adhesive arrays are consumables ($199.99 replacement pack)"],
+ url:"https://shop.openbci.com/collections/frontpage/openbci",site:"https://openbci.com",v:[]},
+{id:"corsano",n:"Corsano CardioWatch 287-2",mk:"Corsano Health",cat:"phys",open:"mixed",raw:true,p:null,price:"Quote only (the older 287 model was quoted at €100–250)",src:"Corsano / trade profile",status:"EU medical-certified; US investigational use only",
+ specs:["Raw green, red and infrared optical pulse exportable by API","Wrist skin conductance (EDA) and heat-flux core-temperature estimate","1-lead ECG, blood oxygen, breathing rate, HRV","Cuffless blood pressure (still under clinical study)","Phone SDKs so data can stay off Corsano’s cloud"],
+ best:["Week-long field monitoring with raw signals you can reprocess","Blinded studies (the participant app can hide data)"],lim:["Enterprise sales process","Wrist EDA is weaker than finger or palm EDA"],
+ url:"https://corsano.com/products/bracelet-2/",site:"https://corsano.com",v:[]},
+{id:"polarloop",n:"Polar Loop (screenless band)",mk:"Polar",cat:"phys",open:"closed",raw:false,p:199.99,price:"$199.99, no subscription",src:"Polar US, Sept 2025",status:"Shipping",
+ specs:["Optical heart rate and accelerometer","29 g, about 8 days battery, 4 weeks onboard storage"],
+ best:["Cheap 24/7 sleep and recovery context for fatigue studies"],lim:["Summaries only, no raw waveforms","Reviewers found activity-tracking errors"],
+ url:"https://www.polar.com",site:"https://www.polar.com",
+ v:[["j6aZccQSqwY","Polar Loop: long-term scientific review","The Quantified Scientist","indep"],["qn7gbxjMGAg","Polar Loop long-term review","Independent reviewer","indep"]]},
+{id:"core2",n:"CORE 2 core body temperature sensor",mk:"greenteg",cat:"phys",open:"mixed",raw:true,p:294.95,price:"$294.95 (enterprise platform €235 per sensor + €15/month)",src:"corebodytemp.com US, 2026",status:"Shipping (released March 2025)",
+ specs:["Heat-flux sensor estimates core temperature","Skin temperature and Heat Strain Index","Live over Bluetooth and ANT+; needs a heart-rate strap for best accuracy","Waterproof (IPX7)"],
+ best:["Low-cost heat-strain channel in protective-gear or hot-cockpit studies"],lim:["Estimated, not measured, core temperature","An independent 2023 study found poor agreement with an ingestible pill"],
+ url:"https://corebodytemp.com/products/core2",site:"https://www.greenteg.com",
+ v:[["zZMCY8h7PD0","Core body temperature sensor long-term review","Independent reviewer (model generation unclear)","indep"],["wimqyzLQxuY","Core body temperature sensor review","Independent reviewer (model generation unclear)","indep"]]},
+{id:"equivital",n:"Equivital EQ02+ LifeMonitor + Black Ghost",mk:"Equivital",cat:"phys",open:"mixed",raw:true,p:1000,price:"up to about $1,000 per unit (US DHS report, Jan 2024); software extra",src:"US DHS assessment, 2024",status:"Shipping",
+ specs:["Chest belt: 2-lead ECG, breathing, skin temperature, estimated core temperature","Option to receive an ingestible temperature pill","Posture, activity and fall detection","8 GB logging, up to 48 hours; live Bluetooth","Hazardous-area (EX) version available"],
+ best:["Reference system for soldier vital-signs and heat-strain monitoring","Validated in US Army and firefighter studies"],lim:["Chest belt comfort on long wear","Core-temperature estimate tends to read high"],
+ url:"https://equivital.com/products/ex-eq02-lifemonitor",site:"https://equivital.com",v:[]},
+{id:"esense",n:"Mindfield eSense Skin Response",mk:"Mindfield",cat:"phys",open:"closed",raw:true,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["Finger-electrode skin conductance sensor that plugs into a phone"],best:["Budget EDA for stress studies"],lim:["Not verified this cycle"],url:"https://mindfield.de",site:"https://mindfield.de",v:[]},
+{id:"stelo",n:"Dexcom Stelo (over-the-counter glucose monitor)",mk:"Dexcom",cat:"chem",open:"closed",raw:"cloud",p:55,price:"about $55 per 2-week sensor (other guides: about $99/month)",src:"Official US site via levlaenge.tech, Apr 2026",status:"Shipping (US)",
+ specs:["Upper-arm glucose sensor, 15-day wear","Data to Apple Health (about 3-hour delay) or Health Connect"],
+ best:["Glucose swings during long shifts, sleep loss or fasting"],lim:["Not part of the Dexcom developer API","No real-time data access"],
+ url:"https://www.stelo.com",site:"https://www.dexcom.com",
+ v:[["ze59_p0l9Ok","Stelo vs Lingo: I wear both","parristx (affiliate links)","indep"],["brL5QfkH32c","Dexcom Stelo review, part two","parristx","indep"]]},
+{id:"lingo",n:"Abbott Lingo (over-the-counter glucose monitor)",mk:"Abbott",cat:"chem",open:"closed",raw:"cloud",p:54,price:"about $54 per 2-week sensor (other guides: $49–$91/month)",src:"Official US site via levlaenge.tech, Apr 2026",status:"Shipping (US, UK)",
+ specs:["14-day upper-arm glucose sensor (FreeStyle Libre platform)","Coaching app; Apple Health and Health Connect export"],
+ best:["Cheapest glucose channel"],lim:["No public developer API","Gamified app"],
+ url:"https://www.hellolingo.com",site:"https://www.abbott.com",v:[["ze59_p0l9Ok","Stelo vs Lingo: I wear both","parristx (affiliate links)","indep"]]},
+{id:"epicore",n:"Epicore Connected Hydration",mk:"Epicore Biosystems",cat:"chem",open:"closed",raw:"cloud",p:null,price:"Quote only (enterprise)",src:"Epicore / Arbill, 2024–2026",status:"Shipping to enterprise",
+ specs:["Reusable module on a single-use arm patch","Sweat loss, sodium, skin temperature and motion","Vibration alerts to drink","Rated for hazardous areas, works up to 65 °C"],
+ best:["Dehydration and heat-stress studies in protective gear"],lim:["Can take up to an hour of sweating before readings","Ask specifically for raw-data export"],
+ url:"https://www.epicorebiosystems.com",site:"https://www.epicorebiosystems.com",v:[]},
+{id:"cortisol",n:"Sweat cortisol sensors (research prototypes)",mk:"EnLiSense, UT Dallas, UC Irvine and others",cat:"chem",open:"closed",raw:null,p:null,price:"Not for sale",src:"Nature Sensors Jan 2026; UT Dallas Jan 2026; Nature Biomedical Engineering May 2026",status:"Research only",
+ specs:["Wearable patches that track cortisol (a stress hormone) and melatonin in sweat"],best:["A research partnership, not a purchase"],lim:["No product with data access exists yet"],
+ url:"https://www.nature.com/articles/s44460-025-00005-z",site:"https://news.utdallas.edu/health-medicine/sensor-sleep-wake-cycle-hormones-2026/",v:[]},
+{id:"skyn",n:"BACtrack Skyn (alcohol through the skin)",mk:"BACtrack",cat:"chem",open:"closed",raw:null,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["Wristband that estimates alcohol from skin vapour"],best:["Impairment research"],lim:["Status not verified this cycle"],url:"https://www.bactrack.com",site:"https://www.bactrack.com",v:[]},
+{id:"presage",n:"Presage SmartSpectra SDK (camera vital signs)",mk:"Presage Technologies",cat:"contact",open:"mixed",raw:true,p:0,price:"Free for the FDA-cleared heart and breathing rate; commercial tiers on quote",src:"PR Newswire, 7 July 2026",status:"Shipping; FDA 510(k) K254169 (July 2026)",
+ specs:["Works with ordinary webcams and phone cameras","Pulse and breathing waveforms, HRV, blink, facial expression and talking detection","iOS, Android, macOS, Linux and Windows","Cleared accuracy: heart-rate error about 1.3 beats per minute, breathing about 1.8 breaths per minute (111 participants, all skin tones)"],
+ best:["Contactless heart and breathing rate at every station in a multi-operator simulation"],
+ lim:["Clearance covers only heart and breathing rate","Free offer targets hospitals, clinics, health organisations and educators; ask about a defence lab","Licence changed from open (LGPL) to proprietary with an API key"],
+ url:"https://presagetech.com/",site:"https://presagetech.com",v:[]},
+{id:"mr60",n:"Seeed MR60BHA2 60 GHz radar kit",mk:"Seeed Studio",cat:"contact",open:"mixed",raw:false,p:26.99,price:"$26.99",src:"seeedstudio.com, 2026",status:"Shipping",
+ specs:["60 GHz radar: breathing and heartbeat up to 1.5 m, presence up to 6 m","ESP32-C6 controller with Wi-Fi and Bluetooth","Ready for Home Assistant and ESPHome"],
+ best:["Seat- or console-mounted breathing baseline with nothing worn"],lim:["Hobby-grade with no published validation","Movement ruins heartbeat estimates; raw radar data not exposed by default"],
+ url:"https://www.seeedstudio.com/MR60BHA2-60GHz-mmWave-Sensor-Breathing-and-Heartbeat-Module-p-5945.html",site:"https://www.seeedstudio.com",
+ v:[["_bqWsTbPzno","Review: XIAO MR60BHA2 breathing and heartbeat kit","NTTIPS (affiliate)","sponsored"]]},
+{id:"realsense",n:"RealSense D555 / D400 depth cameras",mk:"RealSense (Cognex purchase pending)",cat:"contact",open:"mixed",raw:true,p:null,price:"Not verified",src:"Cognex SEC filing, Sept 2026",status:"Shipping; ownership change Q4 2026",
+ specs:["Stereo depth cameras; D555 adds Power over Ethernet and a built-in IMU","Open librealsense SDK"],
+ best:["Posture and body tracking at a console"],lim:["Cognex is buying RealSense for $500M, closing Q4 2026; keep Orbbec, Luxonis or ZED as fallbacks"],
+ url:"https://realsenseai.com",site:"https://realsenseai.com",v:[]},
+{id:"thermal",n:"Thermal cameras (FLIR Lepton, Topdon, Seek)",mk:"Various",cat:"contact",open:"mixed",raw:true,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["Small thermal cameras for facial temperature (the nose tip cools under stress)"],best:["Contactless stress marker"],lim:["Not verified this cycle"],url:"https://www.flir.com",site:"https://www.flir.com",v:[]},
+{id:"tiradar",n:"TI IWR6843 mmWave radar boards",mk:"Texas Instruments",cat:"contact",open:"mixed",raw:true,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["Research radar boards with raw data access"],best:["Custom vital-sign radar research"],lim:["Not verified this cycle"],url:"https://www.ti.com",site:"https://www.ti.com",v:[]},
+{id:"smarteye-ais",n:"Smart Eye AIS (driver monitoring)",mk:"Smart Eye",cat:"dms",open:"closed",raw:null,p:null,price:"Quote only",src:"smarteye.se",status:"Shipping",
+ specs:["Camera plus processing unit, mounted 40–105 cm from the eyes","Detects drowsiness, distraction and microsleep; alcohol-impairment detection added 2025–26"],
+ best:["Production-grade drowsiness reference in vehicle or simulator studies"],lim:["Closed algorithms and proprietary drowsiness definitions"],
+ url:"https://smarteye.se/solutions/automotive/fleet-and-aftermarket/ais/",site:"https://smarteye.se",v:[]},
+{id:"smarteye-pro",n:"Smart Eye Pro (multi-camera eye tracker)",mk:"Smart Eye",cat:"dms",open:"closed",raw:true,p:null,price:"Quote only",src:"smarteye.se",status:"Shipping (version 14)",
+ specs:["Multi-camera remote eye tracking, about 0.5° accuracy in ideal conditions","Research SDK and data output"],
+ best:["Cockpit or console mock-ups with large head movement; complements our Gazepoint"],lim:["Expensive"],
+ url:"https://smarteye.se/solutions/products/",site:"https://smarteye.se",v:[]},
+{id:"perclos",n:"Webcam + MediaPipe PERCLOS (open source)",mk:"Google MediaPipe + community scripts",cat:"dms",open:"open",raw:true,p:0,price:"Free",src:"Open source",status:"Open source",
+ specs:["Face landmarks from any webcam","Eyelid-closure percentage (PERCLOS) and blink rate"],
+ best:["Free drowsiness baseline at every station"],lim:["You validate it yourself; sensitive to lighting and glasses"],
+ url:"https://ai.google.dev/edge/mediapipe",site:"https://ai.google.dev/edge/mediapipe",v:[]},
+{id:"seeingmachines",n:"Seeing Machines Guardian",mk:"Seeing Machines",cat:"dms",open:"closed",raw:null,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["Fleet fatigue and distraction monitoring"],best:["Fleet benchmark"],lim:["Not verified this cycle"],url:"https://seeingmachines.com",site:"https://seeingmachines.com",v:[]},
+{id:"optalert",n:"Optalert drowsiness glasses",mk:"Optalert",cat:"dms",open:"closed",raw:null,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["Glasses that score drowsiness from blink speed"],best:["Wearable drowsiness score"],lim:["Not verified this cycle"],url:"https://www.optalert.com",site:"https://www.optalert.com",v:[]},
+{id:"ocosense",n:"Emteq OCOsense glasses",mk:"Emteq Labs",cat:"eye",open:"closed",raw:true,p:null,price:"Quote only",src:"emteqlabs.com",status:"Shipping (research)",
+ specs:["Optical sensors track facial skin movement at 50 Hz, with no electrodes or cameras","9-axis motion sensor, 4–6 hours battery","Live Bluetooth streaming"],
+ best:["Frown, smile and brow-raise as pleasant/unpleasant markers during XR training"],lim:["Short battery; expression is not the same as emotion","Most studies are company co-authored"],
+ url:"https://www.emteqlabs.com",site:"https://www.emteqlabs.com",
+ v:[["kWh9TEFYKh8","Facial-movement tracking glasses at AWE","Third-party hands-on","indep"],["CBDLkMv6dCA","OCOsense webinar (June 2023)","Emteq Labs","official"]]},
+{id:"adhawk",n:"AdHawk MindLink (MEMS eye-tracking glasses)",mk:"AdHawk Microsystems",cat:"eye",open:"closed",raw:true,p:null,price:"Old prices: MindLink $10,000; MindLink Air about $600",src:"2021–2024 reports",status:"At risk (Google acquisition talks, 2025)",nv:true,
+ specs:["Laser scanning instead of cameras, very high sample rate","Eye movement, pupil size and head motion; MindLink Air under 40 g"],
+ best:["High-speed wearable eye tracking"],lim:["Bloomberg reported Google in final talks to buy AdHawk (March 2025); confirm availability in writing"],
+ url:"https://www.adhawkmicrosystems.com",site:"https://www.adhawkmicrosystems.com",v:[]},
+{id:"openearable",n:"OpenEarable 2.0.1 (open-source sensing earphones)",mk:"KIT TECO / OpenWearables",cat:"diy",open:"open",raw:true,p:2730,price:"€2,348 Developer Starter Bundle (about $2,730)",src:"OpenWearables shop, 2026",status:"Shipping",
+ specs:["Pulse oximeter, ear-canal temperature, bone-conduction microphone","Head motion sensor, ear-canal pressure, two ultrasound-capable microphones","Bluetooth streaming and microSD logging; about 5–8 hours battery","Add-on ExG board for brain and eye signals"],
+ best:["Custom ear pulse and temperature fatigue research where you own the whole stack"],lim:["Expensive for a kit; not a medical device"],
+ url:"https://open-earable.teco.edu/",site:"https://shop.openwearables.com/",v:[]},
+{id:"grovegsr",n:"Seeed Grove GSR sensor",mk:"Seeed Studio",cat:"diy",open:"open",raw:true,p:10.9,price:"$10.90",src:"seeedstudio.com, 2026",status:"Shipping",
+ specs:["Finger-strap skin conductance sensor for Arduino and ESP32"],best:["Cheapest skin-response channel for pilots"],lim:["Hobby-grade"],url:"https://www.seeedstudio.com",site:"https://www.seeedstudio.com",v:[]},
+{id:"banglejs",n:"Bangle.js 2 (open-source watch)",mk:"Espruino",cat:"diy",open:"open",raw:true,p:null,price:"Not verified",src:"Not verified",status:"Check",nv:true,
+ specs:["Hackable JavaScript smartwatch with raw heart-rate sensor access"],best:["Custom wrist logging"],lim:["Not verified this cycle"],url:"https://banglejs.com",site:"https://www.espruino.com",v:[]}
+
+];
+
+const RANK = [
+ {cat:"bci",budget:["pieeg8","muse-athena"],value:["cyton","unicorn"],research:["galea"],note:"Keep your g.tec suite as the main research system; Galea only for EEG inside XR."},
+ {cat:"phys",budget:["polarh10"],value:["movesense"],research:["embraceplus","biopac"],note:"Live multimodal recording points to lab systems (Biopac, PLUX). Multi-day field recording points to EmbracePlus, accepting cloud-only data."},
+ {cat:"eye",budget:["beyond2e"],value:["neon"],research:["xr4"],note:"For headset-based gaze, Varjo with eye-tracking analytics; for real-world gaze, Neon."},
+ {cat:"xr",budget:["quest3s"],value:["steamframe","beyond2e"],research:["xr4fe"],note:"Use the Secure Edition of Varjo for classified spaces."},
+ {cat:"haptic",budget:["tactglove"],value:["nova2"],research:["haptx"],note:"Request a HaptX demo only if fine touch detail is central to the study."},
+ {cat:"diy",budget:["bioamp"],value:["pieeg8"],research:["cyton"],note:"All three stream into LSL, so they sit alongside lab gear."},
+ {cat:"bci",label:"Ear-EEG (new)",budget:["neurable"],value:["idun4"],research:["naox"],note:"Confirm raw-data access with Neurable before buying; IDUN gives raw data out of the box."},
+ {cat:"phys",label:"Heat strain (new)",budget:["core2"],value:["core2"],research:["equivital"],note:"Equivital has US Army and firefighter validation; CORE 2 accuracy evidence is mixed."},
+ {cat:"chem",budget:["lingo"],value:["stelo"],research:["epicore"],note:"Neither consumer glucose monitor has a real-time developer API."},
+ {cat:"contact",budget:["mr60"],value:["presage"],research:["realsense"],note:"Validate camera and radar heart rate against a chest ECG before trusting them."},
+ {cat:"dms",budget:["perclos"],value:["smarteye-ais"],research:["smarteye-pro"],note:"Smart Eye Pro handles large head movement; a useful complement to the Gazepoint."}
+];
+
+const PICKS = [
+ {t:"Make LSL the backbone",b:"Stream every device through Lab Streaming Layer so signals line up in time. Your g.tec and Gazepoint already support this. Add two or three Polar H10 straps (about $105 each) for heart-rate variability and breathing rate.",ids:["polarh10"]},
+ {t:"XR experiments that measure cognitive load",b:"High-fidelity, fixed-base simulation: Varjo XR-4 (2026) with eye tracking, or the Secure Edition for classified work. Lower cost: Quest 3 plus a Pupil Labs Neon mount (about $600 plus €6,195). Buy Galea ($42,980) only if you need brain, muscle, sweat and gaze signals in one headset.",ids:["xr4","quest3","neon-vr","galea"]},
+ {t:"A second or field EEG",b:"Unicorn Hybrid Black fits the g.tec ecosystem and has published validation. Choose OpenBCI Cyton if openness and community tools matter more.",ids:["unicorn","cyton"]},
+ {t:"Haptics for training studies",b:"Start with SenseGlove Nova 2. Ask HaptX for a demo only if fine touch is part of the study design.",ids:["nova2","haptx"]},
+ {t:"Avoid as primary instruments",b:"Emotiv without budgeting for EmotivPRO; EmbracePlus for anything real-time; Vision Pro, Galaxy XR and Ray-Ban Display as sensors. They are useful as platforms to test interfaces on, not as data sources.",ids:["emotiv-epocx","embraceplus","visionpro"]},
+ {t:"New quick wins (about $3.4k total)",b:"IDUN Guardian 4 in-ear EEG for hidden, raw EEG; two CORE 2 sensors for heat strain; three Seeed radar kits for no-wearable breathing baselines; and Presage’s camera vitals (ask about free terms for a defence lab). Add Neurable MW75 Neuro LT only after confirming raw-data access.",ids:["idun4","core2","mr60","presage"]},
+ {t:"Request quotes",b:"Corsano CardioWatch 287-2 research package, Equivital EQ02+ with Black Ghost, Emteq OCOsense, Smart Eye Pro and AIS, and Epicore Connected Hydration. Ask each vendor specifically about raw-data export.",ids:["corsano","equivital","ocosense","smarteye-pro","epicore"]},
+ {t:"Cheap extra channels",b:"PiEEG-8 ($350) for spare EEG; BioAmp EXG Pill ($34.49) for muscle or eye-movement signals during pilots.",ids:["pieeg8","bioamp"]}
+];
+
+const TRENDS = [
+ "Ear-EEG went commercial in 2026: IDUN Guardian 4 shipping, Neurable cutting its price to $499, and Naox gaining FDA clearance.",
+ "Camera vital signs became free: Presage made its FDA-cleared heart and breathing rate available at no cost (July 2026), so the value is now in validation.",
+ "Cuffless blood pressure is arriving in research wristbands (Corsano), but treat wrist blood pressure as a trend, not an absolute value.",
+ "Over-the-counter glucose monitors are cheap (about $54–55 per two weeks) but their data stays walled off.",
+ "Sweat sensing split in two: hydration and sodium are products; cortisol and melatonin are still research.",
+ "Big companies are buying sensing start-ups: Cognex is buying RealSense ($500M, closing Q4 2026) and Google was reported in talks for AdHawk.",
+ "Eye tracking is now built into mid-priced headsets (Steam Frame, Galaxy XR, Vision Pro, Beyond 2e), but mostly to sharpen rendering, not to give researchers data. Varjo and Pupil Labs add-ons remain the research route.",
+ "Consumer brain and nerve sensing is spreading: EEG combined with fNIRS (Muse S Athena), EEG earbuds (Emotiv MW20) and wrist-EMG input (Meta Neural Band).",
+ "A memory-chip shortage pushed prices up in 2026: Vision Pro +$200, Quest 3 +$100, Quest 3S +$50, and Steam Frame launched above Valve’s earlier target. Bigscreen was a rare price cut.",
+ "Defence-friendly variants are appearing, such as Varjo Secure Editions (TAA-compliant, no-radio option).",
+ "Open DIY biosensing has matured: PiEEG, BioAmp and OpenBCI all ship with open software and stream into LSL."
+];
+const TOP10 = [
+ ["idun4","Earbud EEG with raw data, motion and audio, so you can record EEG under a flight helmet or headset without a cap."],
+ ["corsano","Medically certified wristband with raw multi-wavelength pulse, skin response, ECG and temperature through an API, a rare mix."],
+ ["presage","FDA-cleared camera heart and breathing rate, plus HRV, blink and facial-expression outputs from a webcam."],
+ ["equivital","Chest-worn soldier vital-signs system with heat strain index and fall detection, validated in US Army studies."],
+ ["neurable","12-channel EEG hidden in normal-looking headphones at $499, good for realistic office and command-centre studies."],
+ ["ocosense","Optical sensing of facial muscle movement at 50 Hz, a wearable expression channel cameras can’t give in the field."],
+ ["openearable","Fully open-source earphones with pulse oximeter, ear temperature, bone microphone and motion; you own the whole stack."],
+ ["mr60","$27 contactless breathing and heartbeat radar for seat-back or console baselines."],
+ ["epicore","The only commercial continuous sweat-chemistry wearable found: sweat loss and sodium with vibration alerts."],
+ ["smarteye-pro","Research-grade multi-camera eye tracking that tolerates large head movement; a benchmark for the Gazepoint."]
+];
+const FLAGS = [
+ "No raw data: Polar Loop and the Dexcom and Abbott glucose monitors; Neurable raw access unconfirmed.",
+ "Ownership changes: RealSense (Cognex deal) and AdHawk (Google talks). Get support and SDK promises in writing.",
+ "Licence drift: Presage moved from an open licence to a proprietary one with an API key; check offline and classified use.",
+ "Cloud dependence: IDUN workload scores, Epicore and Naox rely on cloud services, a problem for controlled or classified data.",
+ "Paying for your own data: EmotivPRO ($149/month) is needed to export raw Emotiv EEG; Varjo Base Pro costs $2,500/year.",
+ "Cloud-only data: Empatica EmbracePlus has no live streaming.",
+ "Closed sensors: Vision Pro gaze and Meta Neural Band muscle signals are not available as raw data.",
+ "Retirements: Pupil Invisible, Empatica E4 (shut down August 2024), Valve Index, HoloLens 2 (support ends 31 Dec 2027), HP Omnicept (confirm).",
+ "Unreliable price pages: AI-generated review sites listed wrong prices for the Neurosity Crown and claimed $399 “consumer” haptic gloves that the makers never announced."
+];
+const GLOSS = [
+ ["API","Application programming interface: a documented way for your own code to talk to a device."],
+ ["AR / VR / MR / XR","Augmented reality (graphics over the real world), virtual reality (fully computer-generated world), mixed reality (graphics that interact with the real room), and extended reality (the umbrella term for all three)."],
+ ["BCI","Brain–computer interface: a system that reads brain or nerve signals and turns them into data or commands."],
+ ["BLE","Bluetooth Low Energy: a low-power wireless link used by most wearables."],
+ ["ECG","Electrocardiography: recording the heart’s electrical activity."],
+ ["EDA / GSR","Electrodermal activity, also called galvanic skin response: tiny changes in skin sweat, a common stress and arousal measure."],
+ ["EEG","Electroencephalography: recording brain electrical activity from the scalp."],
+ ["EMG / sEMG","Electromyography: recording muscle electrical activity. “Surface” EMG reads it through the skin."],
+ ["EOG","Electrooculography: recording eye movements through electrodes near the eyes."],
+ ["fNIRS","Functional near-infrared spectroscopy: shining infrared light through the scalp to measure blood oxygen in the brain."],
+ ["Foveated rendering / streaming","Drawing full detail only where the eye is looking, to save computing power."],
+ ["HRV","Heart-rate variability: how much the time between heartbeats varies, a common workload and stress marker."],
+ ["Hz (samples per second)","How many measurements a sensor takes each second. 250 Hz means 250 readings per second."],
+ ["IMU","Inertial measurement unit: accelerometer and gyroscope that sense movement and orientation."],
+ ["ITAR / TAA","US export-control rules (International Traffic in Arms Regulations) and the Trade Agreements Act, which governs where products sold to the US government may be made."],
+ ["LSL","Lab Streaming Layer: free software that time-syncs data streams from different devices on one computer or network."],
+ ["Micro-OLED / mini-LED","Display technologies. Micro-OLED gives very sharp, high-contrast tiny screens; mini-LED gives bright screens with local dimming."],
+ ["OpenXR","An open industry standard that lets one VR program run on many headsets."],
+ ["OSC","Open Sound Control: a simple network format some apps use to stream sensor data."],
+ ["PPD","Pixels per degree: how sharp a headset looks. Human 20/20 vision is about 60."],
+ ["PPG / BVP","Photoplethysmography (blood volume pulse): measuring pulse with light, as in smartwatches."],
+ ["RR interval","Time between two heartbeats, the raw material for HRV."],
+ ["SDK","Software development kit: code libraries and tools a maker provides so you can build on its device."],
+ ["ADDW","Advanced Driver Distraction Warning, an EU rule requiring distraction warnings in new cars."],
+ ["CBRN / MOPP","Chemical, biological, radiological and nuclear threats / Mission Oriented Protective Posture, the protective suit levels soldiers wear against them."],
+ ["CGM","Continuous glucose monitor: a skin patch that measures blood sugar every few minutes."],
+ ["CUI","Controlled Unclassified Information: sensitive government data with handling rules."],
+ ["DMS","Driver monitoring system: a camera that watches the driver for drowsiness and distraction."],
+ ["EU-MDR / 510(k)","European medical-device regulation / the US FDA route for clearing a medical device."],
+ ["MEMS","Micro-electromechanical systems: tiny moving parts on a chip, such as a scanning mirror."],
+ ["mmWave radar","Millimetre-wave radar: a small radio sensor that can detect chest movement from breathing and heartbeat."],
+ ["OEM","Original equipment manufacturer: a company that builds another brand’s product."],
+ ["PERCLOS","Percentage of eyelid closure over time, a standard drowsiness measure."],
+ ["PoE","Power over Ethernet: one network cable carries both data and power."],
+ ["PSM","Physiological status monitoring: tracking a soldier’s vital signs in the field."],
+ ["rPPG","Remote photoplethysmography: reading pulse from tiny colour changes in the face on video."],
+ ["SpO₂","Blood oxygen saturation."],
+ ["24-bit resolution","How finely each reading is measured. Higher numbers capture smaller signal changes."]
+];
+
+/* direct image links (product photos) */
+const IMG = {
+ pieeg8:"https://www.pieeg.com/products/pieeg.png",
+ galea:"https://shop.openbci.com/cdn/shop/files/2025-galea-aero-transparent-glow-WEB_03db2931-31f9-42ab-a2cb-6e22edea1fdf_533x.png?v=1759332918",
+ cyton:"https://shop.openbci.com/cdn/shop/files/2025-cyton-product-photo-web_533x.png?v=1756834602",
+ daisy:"https://shop.openbci.com/cdn/shop/files/2025-cyton-daisy-product-photo-web_533x.png?v=1756835474",
+ ganglion:"https://shop.openbci.com/cdn/shop/files/2025-ganglion-product-photo-web_533x.png?v=1762525896",
+ "obci-bundles":"https://shop.openbci.com/cdn/shop/files/UCM4-001_533x.png?v=1700584925",
+ ceegrid:"https://shop.openbci.com/cdn/shop/files/cEEGridpair_533x.png?v=1711565148",
+ idun4:"https://cdn.xingosoftware.com/audioxpress/images/fetch/dpr_1/https%3A%2F%2Faudioxpress.com%2Fassets%2Fupload%2Fimages%2F1%2F20260723130700_IDUN-Guardian4-5-TWeb.jpg"
+};
+P.forEach(x=>{ if(IMG[x.id]) x.img=IMG[x.id]; });
+function imgOf(x){
+  if(x.img) return {src:x.img,kind:"Product photo"};
+  const v=x.v.find(v=>v[3]==="indep")||x.v[0];
+  if(v) return {src:`https://i.ytimg.com/vi/${v[0]}/hqdefault.jpg`,kind:"Thumbnail from a review video"};
+  return null;
+}
+function thumb(x,cls){
+  const im=imgOf(x), c=CATS[x.cat];
+  return `<span class="thumb ${cls||""}${im?"":" noimg"}" style="--cat:${c.color}">${im?`<img src="${im.src}" alt="${x.n.replace(/"/g,"")}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.classList.add('noimg')">`:""}<span class="ph">${c.short}</span></span>`;
+}
+const fmtP = x => x.p==null ? "Quote" : x.p===0 ? "Free" : "$"+Math.round(x.p).toLocaleString("en-US");
+
+/* helpers */
+const $ = s => document.querySelector(s);
+const byId = Object.fromEntries(P.map(x => [x.id, x]));
+const tierOf = p => p == null ? "Q" : p < 300 ? "T1" : p <= 1500 ? "T2" : p <= 10000 ? "T3" : "T4";
+const TIER_LABEL = {T1:"Under $300",T2:"$300–1.5k",T3:"$1.5k–10k",T4:"Over $10k",Q:"Quote / unknown"};
+const OPEN_LABEL = {open:"Open source",mixed:"Open software, closed hardware",closed:"Closed"};
+function rawBadge(r){
+  if(r===true) return '<span class="badge b-good">Raw data: free</span>';
+  if(r==="paid") return '<span class="badge b-bad">Raw data: paid software</span>';
+  if(r==="cloud") return '<span class="badge b-warn">Raw data: cloud only</span>';
+  if(r===false) return '<span class="badge b-bad">No raw data</span>';
+  return '<span class="badge">Raw data: not checked</span>';
+}
+function statusBadge(s){
+  const t=s.toLowerCase();
+  const cls = t.startsWith("shipping")||t==="open source" ? "b-good" : t.includes("retir")||t.includes("no longer") ? "b-bad" : "b-warn";
+  return `<span class="badge ${cls}">${s}</span>`;
+}
+function videoCard(v, prod){
+  const [id,title,ch,kind]=v;
+  const kindLbl = kind==="indep"?'<span class="badge b-good">Independent</span>':kind==="official"?'<span class="badge b-warn">Official</span>':'<span class="badge b-warn">Sponsored</span>';
+  return `<div class="vid">
+    <div class="player" data-vid="${id}">
+      <img class="vthumb" src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">
+      <button type="button" aria-label="Play: ${title}"><span class="play"></span><span>${title}</span></button>
+    </div>
+    <div class="vmeta"><b>${title}</b><span>${ch}${prod?` · ${prod}`:""}</span><div style="margin:6px 0">${kindLbl}</div>
+    <a href="https://www.youtube.com/watch?v=${id}" target="_blank" rel="noopener">Open on YouTube</a></div>
+  </div>`;
+}
+
+/* category chips */
+const activeCats = new Set();
+$("#catChips").innerHTML = Object.entries(CATS).map(([k,c]) =>
+  `<button class="chip" type="button" data-cat="${k}" aria-pressed="false"><span class="sw" style="background:${c.color}"></span>${c.label}</button>`).join("");
+$("#catChips").addEventListener("click", e => {
+  const b=e.target.closest(".chip"); if(!b) return;
+  const k=b.dataset.cat;
+  activeCats.has(k)?activeCats.delete(k):activeCats.add(k);
+  b.setAttribute("aria-pressed", activeCats.has(k));
+  renderList();
+});
+
+/* catalog list */
+const openSet = new Set();
+function renderList(){
+  const q=$("#q").value.trim().toLowerCase();
+  const tier=$("#tier").value, op=$("#open").value, sort=$("#sort").value;
+  const fRaw=$("#fRaw").checked, fVid=$("#fVid").checked, fVer=$("#fVer").checked;
+  let rows=P.filter(x=>{
+    if(activeCats.size && !activeCats.has(x.cat)) return false;
+    if(tier && tierOf(x.p)!==tier) return false;
+    if(op && x.open!==op) return false;
+    if(fRaw && x.raw!==true) return false;
+    if(fVid && !x.v.length) return false;
+    if(fVer && (x.nv || x.p==null)) return false;
+    if(q){
+      const hay=[x.n,x.mk,CATS[x.cat].label,x.price,x.status,...x.specs,...x.best,...x.lim].join(" ").toLowerCase();
+      if(!q.split(/\s+/).every(w=>hay.includes(w))) return false;
+    }
+    return true;
+  });
+  rows.sort((a,b)=>{
+    if(sort==="name") return a.n.localeCompare(b.n);
+    const pa=a.p??Infinity, pb=b.p??Infinity;
+    return sort==="asc" ? pa-pb : (b.p??-1)-(a.p??-1);
+  });
+  $("#count").textContent=`Showing ${rows.length} of ${P.length} products`;
+  if(!rows.length){$("#list").innerHTML='<div class="empty">No products match these filters. Select “Clear filters” to see everything.</div>';return;}
+  $("#list").innerHTML=rows.map(x=>{
+    const c=CATS[x.cat];
+    return `<article class="item${openSet.has(x.id)?" open":""}" id="item-${x.id}" style="--cat:${c.color}">
+      <button class="row" type="button" aria-expanded="${openSet.has(x.id)}" data-id="${x.id}">
+        ${thumb(x)}
+        <span><span class="nm">${x.n}</span><span class="mk"> ${x.mk}</span></span>
+        <span class="c-cat"><span class="badge">${c.short}</span></span>
+        <span class="pr">${fmtP(x)}<small>${TIER_LABEL[tierOf(x.p)]}</small></span>
+        <span class="c-open"><small>${OPEN_LABEL[x.open]}</small></span>
+        <span class="c-status">${statusBadge(x.status)} ${x.nv?'<span class="badge b-warn">Not verified</span>':""}</span>
+      </button>
+      <div class="detail">${openSet.has(x.id)?detailHTML(x):""}</div>
+    </article>`;}).join("");
+}
+function detailHTML(x){
+  return `<div class="d-grid">
+    <div>
+      <h3>Key specs</h3><ul>${x.specs.map(s=>`<li>${s}</li>`).join("")}</ul>
+      <h3 style="margin-top:14px">Best for</h3><ul>${x.best.map(s=>`<li>${s}</li>`).join("")}</ul>
+      <h3 style="margin-top:14px">Limits</h3><ul>${x.lim.map(s=>`<li>${s}</li>`).join("")}</ul>
+    </div>
+    <div>
+      <figure class="hero">${thumb(x,"big")}<figcaption>${(()=>{const im=imgOf(x);return im?`${im.kind}. <a href="${im.src}" target="_blank" rel="noopener">Open image directly</a>. `:"No verified photo yet. ";})()}<a href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(x.n+" "+x.mk)}" target="_blank" rel="noopener">Search more images</a></figcaption></figure>
+      <h3>Price</h3><p style="margin:0 0 4px;font-weight:700">${x.price}</p>
+      <p style="margin:0 0 10px;color:var(--muted);font-size:.88rem">Source: ${x.src}</p>
+      <h3>Openness and data</h3>
+      <p style="margin:0 0 6px"><span class="badge b-acc">${OPEN_LABEL[x.open]}</span> ${rawBadge(x.raw)}</p>
+      <div class="links">
+        <a class="btn solid" href="${x.url}" target="_blank" rel="noopener">Product page</a>
+        <a class="btn" href="${x.site}" target="_blank" rel="noopener">Maker website</a>
+      </div>
+      ${x.nv?'<div class="note">Not verified in this research pass. Confirm price and availability with the maker before ordering.</div>':""}
+    </div>
+  </div>
+  ${x.v.length?`<h3 style="margin-top:18px">Review videos</h3><div class="vids">${x.v.slice().sort(kindSort).map(v=>videoCard(v)).join("")}</div>`:
+  `<p style="color:var(--muted);font-size:.9rem;margin-top:16px">No verified review video yet. Try searching YouTube for “${x.n} review”: <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(x.n+" review")}" target="_blank" rel="noopener">search YouTube</a>.</p>`}`;
+}
+const kindRank={indep:0,official:1,sponsored:2};
+const kindSort=(a,b)=>kindRank[a[3]]-kindRank[b[3]];
+$("#list").addEventListener("click",e=>{
+  const b=e.target.closest("button.row"); if(!b) return;
+  const id=b.dataset.id, art=b.parentElement;
+  if(openSet.has(id)){openSet.delete(id);art.classList.remove("open");b.setAttribute("aria-expanded","false");art.querySelector(".detail").innerHTML="";}
+  else{openSet.add(id);art.classList.add("open");b.setAttribute("aria-expanded","true");art.querySelector(".detail").innerHTML=detailHTML(byId[id]);}
+});
+["#q","#tier","#open","#sort","#fRaw","#fVid","#fVer"].forEach(s=>$(s).addEventListener("input",renderList));
+$("#reset").addEventListener("click",()=>{
+  $("#q").value="";$("#tier").value="";$("#open").value="";$("#sort").value="asc";
+  ["#fRaw","#fVid","#fVer"].forEach(s=>$(s).checked=false);
+  activeCats.clear();document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed","false"));
+  renderList();
+});
+
+/* click-to-play players anywhere */
+document.addEventListener("click",e=>{
+  const btn=e.target.closest(".player button"); if(!btn) return;
+  const box=btn.parentElement, id=box.dataset.vid;
+  box.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" title="YouTube video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>`;
+});
+
+/* videos tab */
+function renderVideos(){
+  const onlyIndep=$("#vIndep").checked;
+  let html="";
+  Object.entries(CATS).forEach(([k,c])=>{
+    const prods=P.filter(x=>x.cat===k && x.v.length);
+    const cards=[];
+    prods.forEach(x=>x.v.slice().sort(kindSort).forEach(v=>{ if(!onlyIndep||v[3]==="indep") cards.push(videoCard(v,x.n)); }));
+    if(cards.length) html+=`<div class="vgroup"><h3 style="color:${c.color}">${c.label}</h3><div class="vids">${cards.join("")}</div></div>`;
+  });
+  $("#vidAll").innerHTML=html||'<div class="empty">No videos match.</div>';
+}
+$("#vIndep").addEventListener("input",renderVideos);
+
+/* rankings */
+function link(id){const x=byId[id];return `<button class="lnk" type="button" data-go="${id}">${x.n}</button> <span style="color:var(--muted);font-size:.85rem">(${fmtP(x)})</span>`;}
+$("#rankTable").innerHTML=`<thead><tr><th>Category</th><th>Best budget</th><th>Best value</th><th>Best research-grade</th><th>Note</th></tr></thead><tbody>`+
+ RANK.map(r=>`<tr><td><b style="color:${CATS[r.cat].color}">${r.label||CATS[r.cat].label}</b></td><td>${r.budget.map(link).join("<br>")}</td><td>${r.value.map(link).join("<br>")}</td><td>${r.research.map(link).join("<br>")}</td><td>${r.note}</td></tr>`).join("")+"</tbody>";
+
+/* picks */
+$("#picks").innerHTML=PICKS.map(p=>`<div class="card"><h3>${p.t}</h3><p style="margin:0 0 10px">${p.b}</p><div class="links">${p.ids.map(id=>`<button class="btn" type="button" data-go="${id}">${byId[id].n}</button>`).join("")}</div></div>`).join("");
+$("#top10").innerHTML=TOP10.map(([id,why],i)=>{const x=byId[id],c=CATS[x.cat];return `<article class="t10" style="--cat:${c.color}"><div style="display:flex;justify-content:space-between;align-items:center"><span class="rank">${i+1}</span><span class="badge">${c.short}</span></div>${thumb(x,"big")}<h3>${x.n}</h3><p>${why}</p><p style="color:var(--muted);font-size:.88rem">${x.price}</p><div class="links"><button class="btn" type="button" data-go="${id}">Open full entry</button></div></article>`;}).join("");
+$("#trends").innerHTML=TRENDS.map(t=>`<li>${t}</li>`).join("");
+$("#flags").innerHTML=FLAGS.map(t=>`<li>${t}</li>`).join("");
+$("#gloss").innerHTML=GLOSS.map(([t,d])=>`<dt>${t}</dt><dd>${d}</dd>`).join("");
+
+/* go to product */
+function goTo(id){
+  openSet.add(id);
+  // clear filters that would hide it
+  $("#q").value="";$("#tier").value="";$("#open").value="";["#fRaw","#fVid","#fVer"].forEach(s=>$(s).checked=false);
+  activeCats.clear();document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed","false"));
+  showTab("catalog");renderList();
+  requestAnimationFrame(()=>{const el=document.getElementById("item-"+id); if(el){el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});el.querySelector("button.row").focus({preventScroll:true});}});
+}
+document.addEventListener("click",e=>{const g=e.target.closest("[data-go]"); if(g) goTo(g.dataset.go);});
+
+/* tabs */
+const TABS=["catalog","top","videos","rankings","picks","trends","glossary"];
+function showTab(t){
+  if(!TABS.includes(t)) t="catalog";
+  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));
+  document.querySelectorAll("section.panel").forEach(s=>s.classList.toggle("on",s.id==="p-"+t));
+  if(location.hash!=="#"+t) history.replaceState(null,"","#"+t);
+  if(t==="videos") renderVideos();
+}
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+window.addEventListener("hashchange",()=>showTab(location.hash.slice(1)));
+
+/* spectrum */
+function renderSpectrum(){
+  const svg=$("#spec"), W=1000, L=150, R=20, top=34, lane=34;
+  const min=Math.log10(10), max=Math.log10(60000);
+  const x=p=>L+(Math.log10(Math.max(p,10))-min)/(max-min)*(W-L-R);
+  const keys=Object.keys(CATS);
+  const axisY=top+keys.length*lane+6;
+  svg.setAttribute("viewBox",`0 0 ${W} ${axisY+26}`);
+  let s="";
+  // tier bands
+  const bounds=[10,300,1500,10000,60000], names=["Under $300","$300–1.5k","$1.5k–10k","Over $10k"];
+  bounds.slice(0,-1).forEach((b,i)=>{
+    const x0=x(b), x1=x(bounds[i+1]);
+    s+=`<rect x="${x0}" y="${top-6}" width="${x1-x0}" height="${keys.length*lane+4}" fill="${i%2?"var(--surface-2)":"transparent"}"/>`;
+    s+=`<text class="tier-tag" x="${(x0+x1)/2}" y="${top-12}" text-anchor="middle">${names[i]}</text>`;
+  });
+  keys.forEach((k,i)=>{
+    const y=top+i*lane+lane/2;
+    s+=`<text class="lane-label" x="${L-12}" y="${y+4}" text-anchor="end">${CATS[k].short}</text>`;
+    s+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="var(--line)" stroke-width="1"/>`;
+  });
+  [10,100,1000,10000,50000].forEach(t=>{
+    s+=`<line x1="${x(t)}" x2="${x(t)}" y1="${axisY-4}" y2="${axisY+2}" stroke="var(--muted)"/>`;
+    s+=`<text class="axis-label" x="${x(t)}" y="${axisY+16}" text-anchor="middle">$${t>=1000?(t/1000)+"k":t}</text>`;
+  });
+  keys.forEach((k,i)=>{
+    const items=P.filter(p=>p.cat===k&&p.p!=null).sort((a,b)=>a.p-b.p);
+    items.forEach((p,j)=>{
+      const y=top+i*lane+lane/2+((j%3)-1)*8;
+      s+=`<circle class="dot" tabindex="0" role="button" aria-label="${p.n}, ${p.price}" data-id="${p.id}" cx="${x(p.p).toFixed(1)}" cy="${y}" r="6" fill="${CATS[k].color}" stroke="var(--surface)" stroke-width="1.5"/>`;
+    });
+  });
+  svg.innerHTML=s;
+  const tip=$("#tip");
+  svg.addEventListener("mousemove",e=>{
+    const d=e.target.closest(".dot"); if(!d){tip.style.display="none";return;}
+    const p=byId[d.dataset.id];
+    tip.innerHTML=`<b>${p.n}</b><br>${p.price}`;
+    tip.style.display="block";
+    tip.style.left=Math.min(e.clientX+14,innerWidth-270)+"px";tip.style.top=(e.clientY+14)+"px";
+  });
+  svg.addEventListener("mouseleave",()=>tip.style.display="none");
+  svg.addEventListener("click",e=>{const d=e.target.closest(".dot"); if(d){tip.style.display="none";goTo(d.dataset.id);}});
+  svg.addEventListener("keydown",e=>{const d=e.target.closest(".dot"); if(d&&(e.key==="Enter"||e.key===" ")){e.preventDefault();goTo(d.dataset.id);}});
+}
+
+/* theme */
+$("#themeBtn").addEventListener("click",()=>{
+  const r=document.documentElement;
+  const cur=r.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+  r.dataset.theme = cur==="dark"?"light":"dark";
+  try{localStorage.setItem("hf-theme",r.dataset.theme);}catch(e){}
+});
+try{const t=localStorage.getItem("hf-theme"); if(t) document.documentElement.dataset.theme=t;}catch(e){}
+
+renderSpectrum();
+renderList();
+showTab(location.hash.slice(1)||"catalog");
+</script>
+</body>
+</html>
